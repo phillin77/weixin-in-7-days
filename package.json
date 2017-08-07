@@ -23,6 +23,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "koa": "^2.3.0",
+    "raw-body": "^2.3.0",
     "sha1": "^1.1.1"
   }
 }

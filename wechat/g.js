@@ -9,14 +9,7 @@
 'use strict'
 
 var sha1 = require('sha1')
-var Promise = require('bluebird')  // 使用 bluebird 提供的 Promise
-
-// If you're using Bludbird v2
-// var request = Promise.promisify(require('request'))  // 使用 bluebird 提供的 Promise 將 request Promise 化
-
-// If you're using Bluebird v3, you'll want to use the multiArgs option:
-var request = Promise.promisify(require("request"), {multiArgs: true});
-Promise.promisifyAll(request, {multiArgs: true})
+var getRawBody = require('raw-body')
 
 var Wechat = require('./wechat')
 
@@ -35,12 +28,34 @@ module.exports = function(opts) {
 		var str = [token, timestamp, nonce].sort().join('')
 		var sha = sha1(str)
 
-		if (sha === signature) {
-			this.body = echostr + ''
-		}
-		else {
-			this.body = 'wrong'
-		}
+		if (this.method === 'GET') {
+			// 驗證訊息是否來自微信服務器
+			// reference: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421135319
+			if (sha === signature) {
+				this.body = echostr + ''
+			}
+			else {
+				this.body = 'wrong'
+			}
+		} // if (this.method === 'GET')
+		else if (this.method === 'POST') {
+			// 驗證訊息是否來自微信服務器，如果不是，回傳 'wrong'
+			if (sha !== signature) {
+				this.body = 'wrong'
+
+				return false
+			}
+
+			// 取得 POST 過來的原始的 xml 內容
+			var data = yield getRawBody(this.req, {
+				length: this.length,
+				limit: '1mb',
+				encoding: this.chatset
+			})
+
+			// TODO ONLY for Debugging
+			console.log(data.toString())
+		} // if (this.method === 'POST')
 	} // return function* (next)
 } // module.exports
 

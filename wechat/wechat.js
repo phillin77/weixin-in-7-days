@@ -112,3 +112,5 @@ Wechat.prototype.updateAccessToken = function() {
 		})
 	}) // return new Promise
 } // updateAccessToken
+
+module.exports = Wechat
