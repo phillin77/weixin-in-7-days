@@ -4,6 +4,7 @@
   "description": "weixin in 7 days",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/phillin77/weixin-in-7-days/issues"
   },
-  "homepage": "https://github.com/phillin77/weixin-in-7-days#readme"
+  "homepage": "https://github.com/phillin77/weixin-in-7-days#readme",
+  "dependencies": {
+    "koa": "^2.3.0",
+    "sha1": "^1.1.1"
+  }
 }
