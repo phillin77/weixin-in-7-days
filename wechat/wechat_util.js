@@ -20,6 +20,7 @@ exports.parseXmlAsync = function(xml) {
 	})
 } // parseXmlAsync
 
+// recursive function to format message
 function formatMessage(result) {
 	var message = {}
 
@@ -41,7 +42,7 @@ function formatMessage(result) {
 					message[key] = formatMessage(val)
 				}
 				else {
-					message[key] === (val || '').trim()
+					message[key] = (val || '').trim()
 				}
 			}
 			else {
