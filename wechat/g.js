@@ -58,6 +58,10 @@ module.exports = function(opts) {
 
 			// TODO ONLY for Debugging
 			console.log(content)
+
+			var message = util.formatMessage(content.xml)
+			// TODO ONLY for Debugging
+			console.log(message)
 		} // if (this.method === 'POST')
 	} // return function* (next)
 } // module.exports
