@@ -1,0 +1,22 @@
+{
+  "name": "weixin-in-7-days-code",
+  "version": "1.0.0",
+  "description": "weixin in 7 days",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phillin77/weixin-in-7-days.git"
+  },
+  "keywords": [
+    "weixin"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phillin77/weixin-in-7-days/issues"
+  },
+  "homepage": "https://github.com/phillin77/weixin-in-7-days#readme"
+}
