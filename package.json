@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/phillin77/weixin-in-7-days#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "koa": "^2.3.0",
     "sha1": "^1.1.1"
   }
