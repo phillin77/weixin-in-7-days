@@ -12,6 +12,7 @@ var sha1 = require('sha1')
 var getRawBody = require('raw-body')
 
 var Wechat = require('./wechat')
+var util = require('./wechat_util')
 
 module.exports = function(opts) {
 	// 建立全域使用的 WeChat Instance
@@ -53,8 +54,10 @@ module.exports = function(opts) {
 				encoding: this.chatset
 			})
 
+			var content = yield util.parseXmlAsync(data)
+
 			// TODO ONLY for Debugging
-			console.log(data.toString())
+			console.log(content)
 		} // if (this.method === 'POST')
 	} // return function* (next)
 } // module.exports
