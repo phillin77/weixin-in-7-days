@@ -1,15 +1,16 @@
 /**
  * 主程式
  * start:  2017.08.07
- * update: 2017.08.07
+ * update: 2017.08.08
  * version:
- *     2017.08.07 [ADD]  1st Version
+ *     2017.08.08 [ADD]  1st Version
+ *     
  */
 
 'use strict'
 
 var Koa = require('koa')
-var sha1 = require('sha1')
+var wechat = require('./wechat/g')
 
 var server_port = process.env.WECHAT_PORT || 1234
 var config = {
@@ -18,29 +19,11 @@ var config = {
 		appSecret: process.env.WECHAT_APP_SECRET || '',
 		token: process.env.WECHAT_APP_TOKEN || ''
 	}
-}
+} // config
 
 var app = new Koa()
 
-app.use(function* (next) {
-	console.log(this.query)
-
-	var token = config.wechat.token
-	var signature = this.query.signature
-	var nonce = this.query.nonce
-	var timestamp = this.query.timestamp
-	var echostr = this.query.echostr
-	var str = [token, timestamp, nonce].sort().join('')
-	var sha = sha1(str)
-
-	if (sha === signature) {
-		this.body = echostr + ''
-	}
-	else {
-		this.body = 'wrong'
-	}
-
-}) // app.use
+app.use(wechat(config.wechat))
 
 app.listen(server_port)
 console.log('Listening: %s', server_port)
