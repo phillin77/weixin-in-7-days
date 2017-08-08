@@ -17,6 +17,7 @@ var Promise = require('bluebird')  // 使用 bluebird 提供的 Promise
 var request = Promise.promisify(require("request"), {multiArgs: true});
 Promise.promisifyAll(request, {multiArgs: true})
 
+var util = require('./wechat_util')
 
 // WeChat API 網址定義
 const prefix = 'https://api.weixin.qq.com/cgi-bin/'
@@ -112,5 +113,15 @@ Wechat.prototype.updateAccessToken = function() {
 		})
 	}) // return new Promise
 } // updateAccessToken
+
+Wechat.prototype.reply = function() {
+	var content = this.body
+	var message = this.weixin
+	var xml = util.tpl(content, message)
+
+	this.status = 200
+	this.type = 'application/xml'
+	this.body = xml
+} // reply
 
 module.exports = Wechat

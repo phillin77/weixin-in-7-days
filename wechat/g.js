@@ -66,28 +66,11 @@ module.exports = function(opts) {
 			// TODO ONLY for Debugging
 			console.log('message: ', message)
 
-			if (message.MsgType === 'event') {
-				if (message.Event === 'subscribe') {
-					var now = new Date().getTime()
+			this.weixin = message
 
-					that.status = 200  // http status code
-					that.type = 'application/xml'  // response 的 content type
-					
-					// 回覆消息類型與 xml 格式，參：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140543
-					// TODO ONLY for Debugging
-					var reply = '<xml>'
-					+ '<ToUserName><![CDATA[' + message.FromUserName + ']]></ToUserName>'
-					+ '<FromUserName><![CDATA[' + message.ToUserName + ']]></FromUserName>'
-					+ '<CreateTime>' + now + '</CreateTime>'
-					+ '<MsgType><![CDATA[text]]></MsgType>'
-					+ '<Content><![CDATA[你好]]></Content>'
-					+ '</xml>'
-					console.log(reply)
-					that.body = reply
+			yield handler.call(this, next)
 
-					return
-				}
-			}
+			wechat.reply.call(this)			
 		} // if (this.method === 'POST')
 	} // return function* (next)
 } // module.exports
