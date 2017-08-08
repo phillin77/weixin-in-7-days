@@ -25,7 +25,7 @@ const config = {
 		getAccessToken: function() {
 			return util.readFileAsync(WECHAT_FILE)
 		},
-		// 將 access_token 從實體媒體中讀出
+		// 將 access_token 存回實體媒體
 		saveAccessToken: function(data) {
 			data = JSON.stringify(data)
 			return util.writeFileAsync(WECHAT_FILE, data)
