@@ -64,7 +64,7 @@ module.exports = function(opts, handler) {
 
 			var message = util.formatMessage(content.xml)
 			// TODO ONLY for Debugging
-			console.log('message: ', message)
+			console.log('incoming message: ', message)
 
 			this.weixin = message
 
