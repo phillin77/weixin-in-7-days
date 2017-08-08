@@ -8,12 +8,16 @@
 
 'use strict'
 
+var config = require('./config')
+var Wechat = require('./wechat/wechat')
+var wechatApi = new Wechat(config.wechat)
+
 /**
  * 接收消息-普通消息 reference: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140453
  * 接收消息-事件推送 reference: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140454
  */
 exports.reply = function *(next) {
-	var message = this.weixin
+	var message = this.weixin 
 
 	if (message.MsgType == 'event') {
 		if (message.Event === 'subscribe') {
@@ -67,6 +71,14 @@ exports.reply = function *(next) {
 				picUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Microchip_PIC24HJ32GP202.jpg/220px-Microchip_PIC24HJ32GP202.jpg',
 				url: 'https://zh.wikipedia.org/zh-tw/PIC%E5%BE%AE%E6%8E%A7%E5%88%B6%E5%99%A8'
 */			}]
+		}
+		else if (content === '5') {  // 測試 回覆 上傳的臨時素材
+			var data = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png')
+
+			reply = {
+				type: 'image',
+				mediaId: data.media_id
+			}
 		} // if-else
 
 		this.body = reply
