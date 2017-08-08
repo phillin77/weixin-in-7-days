@@ -21,18 +21,46 @@ exports.reply = function *(next) {
 				// TODO 尚未處理 [掃二維碼進來] 的邏輯
 				console.log('掃二維碼進來' + message.EventKey + ' ' + message.ticket)
 			}
-
-			this.body = '你訂閱了這個號'
-		}
+			this.body = '你好，歡迎訂閱了這個號'
+		} // if (message.Event === 'subscribe')
 		else if (message.Event === 'unsubscribe') {
 			console.log('無情取消關注')
-
 			this.body = ''
+		} // else if (message.Event === 'unsubscribe')
+		else if (message.Event === 'LOCATION') { 
+			this.body = '您上報的位置是： ' + message.Latitude + '/' + message.Longitude + '-' + message.Precision
+		} // else if (message.Event === 'LOCATION')
+		else if (message.Event === 'CLICK') {  // 點擊菜單(Menu)
+			this.body = '您點擊了菜單： ' + message.EventKey
+		} // else if (message.Event === 'CLICK')
+		else if (message.Event === 'SCAN') {  // 掃描二維碼
+			console.log('關注後掃二維碼' + message.EventKey + ' ' + message.Ticket)
+			this.body = '看到您掃了二維碼'
+		} // else if (message.Event === 'SCAN')
+		else if (message.Event === 'VIEW') {  // 點擊菜單中的鏈接
+			this.body = '您點擊了菜單中的鏈接： ' + message.EventKey
 		} // if-else
+	} // if (messsage.MsgType == 'event')
+	else if (message.MsgType === 'text') {
+		var content = message.Content
+		var reply = "你說的 " + content + ' 我還沒有處理'
 
-	} // if (messsage.msgType == 'event')
+		// TODO Degug 用：簡易版邏輯
+		if (content === '1') {
+			reply = '天下第一吃大米'
+		} 
+		else if (content === '2') {
+			reply = '天下第二吃豆腐'
+		} 
+		else if (content === '3') {
+			reply = '天下第三吃仙丹'
+		}
+
+		this.body = reply
+	} // else if (message.MsgType === 'text')
 	else {
-
+		// TODO 尚未處理的 MsgType
+		console.log('尚未處理的 MsgType: ' + message.MsgType)
 	} // if-else (messsage.msgType)
 
 	yield next
