@@ -71,12 +71,13 @@ exports.tpl = function(content, message) {
 		type = 'news'
 	}
 
-	type = content.type || type
+	if (content) 
+		type = content.type || type
 	info.content = content
 	info.createTime = new Date().getTime()
 	info.msgType = type
-	info.toUserName = toUserName
-	info.fromUserName = fromUserName
+	info.toUserName = fromUserName  // 訊息送回給來源的 User
+	info.fromUserName = toUserName
 
 	return tpl.compiled(info)
 } // tpl

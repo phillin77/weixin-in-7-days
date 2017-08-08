@@ -52,7 +52,7 @@ function Wechat(opts) {
 
 			// 檢查 access_token 是否有效與合法
 			if (that.isValidAccessToken(data)) {
-				Promise.resolve(data)
+				return Promise.resolve(data)
 			}
 			else {
 				// 重新更新 access_token
@@ -60,14 +60,12 @@ function Wechat(opts) {
 			}
 		})
 		.then(function(data) {
-			if (data) {
-				// 將 access_token 儲存到目前執行的 Global Instance 中
-				that.access_token = data.access_token
-				that.expires_in = data.expires_in
+			// 將 access_token 儲存到目前執行的 Global Instance 中
+			that.access_token = data.access_token
+			that.expires_in = data.expires_in
 
-				// 將 access_token 儲存到實體儲存媒體中
-				that.saveAccessToken(data)
-			}
+			// 將 access_token 儲存到實體儲存媒體中
+			that.saveAccessToken(data)
 		})
 } // Wechat
 
@@ -117,7 +115,13 @@ Wechat.prototype.updateAccessToken = function() {
 Wechat.prototype.reply = function() {
 	var content = this.body
 	var message = this.weixin
+	// TODO Debug
+	// console.log('content in reply: ', content)
+	// console.log('message in reply: ', message)
+	
+	// 使用 template 產生 weixin response 所需的 xml
 	var xml = util.tpl(content, message)
+	// console.log('xml in reply: ', xml)
 
 	this.status = 200
 	this.type = 'application/xml'
