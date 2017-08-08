@@ -59,12 +59,14 @@ exports.reply = function *(next) {
 			reply = [{
 				title: '自動回覆的圖文訊息',
 				description: '圖文訊息的描述',
-				picUrl: 'https://lintvwpri.files.wordpress.com/2017/02/pic-of-the-day-2-13.jpg?w=650'
-			}, {
+				picUrl: 'https://lintvwpri.files.wordpress.com/2017/02/pic-of-the-day-2-13.jpg?w=650',
+				url: 'https://github.com'
+/*			}, {
 				title: 'PIC 處理器',
 				description: '圖片來源：wikipedia',
-				picUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Microchip_PIC24HJ32GP202.jpg/220px-Microchip_PIC24HJ32GP202.jpg'
-			}]
+				picUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Microchip_PIC24HJ32GP202.jpg/220px-Microchip_PIC24HJ32GP202.jpg',
+				url: 'https://zh.wikipedia.org/zh-tw/PIC%E5%BE%AE%E6%8E%A7%E5%88%B6%E5%99%A8'
+*/			}]
 		} // if-else
 
 		this.body = reply
