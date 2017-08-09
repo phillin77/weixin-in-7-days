@@ -250,6 +250,20 @@ exports.reply = function *(next) {
 			var tagList = yield wechatApi.getTagListOfUserId(message.FromUserName)
 			console.log("tag list of me: ", tagList)			
 				
+			var tagId = 100	
+
+			var result1 = yield wechatApi.batchTagging(tagId, [message.FromUserName])
+			console.log("result of batchTagging: ", result1)
+
+			tagList = yield wechatApi.getTagListOfUserId(message.FromUserName)
+			console.log("tag list of me after batchTagging: ", tagList)			
+
+			var result2 = yield wechatApi.batchUnTagging(tagId, [message.FromUserName])
+			console.log("result of batchUpTagging: ", result2)
+
+			tagList = yield wechatApi.getTagListOfUserId(message.FromUserName)
+			console.log("tag list of me after batchUnTagging: ", tagList)			
+
 			reply = "12, 測試結果參 console.log"
 
 		} // if-else
