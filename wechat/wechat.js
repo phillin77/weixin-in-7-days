@@ -50,7 +50,7 @@ const api = {
 		// 获取素材总数 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738733)
 		count: prefix + 'material/get_materialcount?',
 		// 获取素材列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738734)
-		batch: prefix + 'material/batchget_material'
+		batch: prefix + 'material/batchget_material?'
 	}
 } // api
 

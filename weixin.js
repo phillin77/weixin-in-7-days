@@ -132,17 +132,25 @@ exports.reply = function *(next) {
 				mediaId: data.media_id
 			}
 		}
-		else if (content === '10') {  // 測試 上傳的永久素材 (視頻)，回覆 視頻消息
+		else if (content === '10') {  // 測試 上傳的永久素材 (圖片)，再上傳圖文消息，回覆 圖文消息
 			// 必須先上傳 永久素材 (圖片)，取得 mdeia_id
 			var permanent = {}
 			var picData = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png', permanent)
 
 			// TODO ONLY for Debugging
-			console.log('picData: ', picData)
+			// console.log('picData: ', picData)
 
 			var media = {
 				articles: [{
 					 title: 'WeChat Icon',
+					 thumb_media_id: picData.media_id,
+					 author: 'Me',
+					 digest: '摘要',
+					 show_cover_pic: 1,
+					 content: '內容',
+					 content_source_url: 'https://github.com'
+				},{
+					 title: '圖',
 					 thumb_media_id: picData.media_id,
 					 author: 'Me',
 					 digest: '摘要',
@@ -157,7 +165,7 @@ exports.reply = function *(next) {
 			data = yield wechatApi.fetchMaterial(data.media_id, 'news', permanent)
 
 			// TODO ONLY for Debugging
-			console.log('data: ', data)
+			// console.log('data: ', data)
 
 			var items = data.news_item
 			var news = []
@@ -174,7 +182,61 @@ exports.reply = function *(next) {
 			reply = news
 
 			// TODO ONLY for Debugging
-			console.log('reply: ', reply)
+			// console.log('reply: ', reply)
+		}
+		else if (content === '11') {  // 測試 上傳的永久素材 (圖片)，再上傳圖文消息，回覆 圖文消息
+			var counts = yield wechatApi.countMaterial()
+
+			console.log("counts: ", JSON.stringify(counts))
+
+			// var list1 = yield wechatApi.batchMaterial({
+			// 	type: 'image',
+			// 	offset: 0,
+			// 	count: 10
+			// })
+			// var list2 = yield wechatApi.batchMaterial({
+			// 	type: 'video',
+			// 	offset: 0,
+			// 	count: 10
+			// })
+			// var list3 = yield wechatApi.batchMaterial({
+			// 	type: 'voice',
+			// 	offset: 0,
+			// 	count: 10
+			// })
+			// var list4 = yield wechatApi.batchMaterial({
+			// 	type: 'news',
+			// 	offset: 0,
+			// 	count: 10
+			// })
+
+			// 改用 yeild 的語法完成上面 4 個 listX 讀取
+			var results = yield [
+				wechatApi.batchMaterial({
+					type: 'image',
+					offset: 0,
+					count: 10
+				}),
+				wechatApi.batchMaterial({
+					type: 'video',
+					offset: 0,
+					count: 10
+				}),
+				wechatApi.batchMaterial({
+					type: 'voice',
+					offset: 0,
+					count: 10
+				}),
+				wechatApi.batchMaterial({
+					type: 'news',
+					offset: 0,
+					count: 10
+				})				
+			]
+
+			console.log( JSON.stringify(results) )
+
+			reply = "11, 測試結果參 console.log"
 
 		} // if-else
 
