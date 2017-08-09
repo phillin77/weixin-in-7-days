@@ -149,8 +149,9 @@ Wechat.prototype.updateAccessToken = function() {
 } // updateAccessToken
 
 /**
- * 上傳 臨時素材
- * @param  {[string]} type   'image' | 'voice' / 'video' / 'thumb'
+ * 上傳 臨時素材 or 永久素材
+ * @param  {[string]} type   臨時素材：'image' | 'voice' | 'video' | 'thumb'; 永久素材：'image' | 'video' | 'pic' | 'news'
+ * 
  * @param  {[type]} material   如果是臨時素材，則傳入 filepath； 如果是永久素材，則
  * @param  {[object]} permanent  上傳永久素材的設定 (optinal for 臨時素材)
  * @return {[type]}          [description]
