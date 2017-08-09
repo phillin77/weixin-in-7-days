@@ -71,7 +71,7 @@ exports.tpl = function(content, message) {
 		type = 'news'
 	}
 
-	if (content) 
+	// if (content) 
 		type = content.type || type
 	info.content = content
 	info.createTime = new Date().getTime()
@@ -79,5 +79,8 @@ exports.tpl = function(content, message) {
 	info.toUserName = fromUserName  // 訊息送回給來源的 User
 	info.fromUserName = toUserName
 
-	return tpl.compiled(info)
+	// TODO ONLY for Debugging
+	console.log("tpl info: ", info)
+
+	return tpl.compile(info)
 } // tpl

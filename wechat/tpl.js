@@ -66,9 +66,9 @@ var tpl = heredoc(function() {/*
 	</xml>
 */}) // tpl
 
-var compiled = ejs.compile(tpl)
+var compile = ejs.compile(tpl)
 
 exports = module.exports = {
-	compiled: compiled
+	compile: compile
 }
 

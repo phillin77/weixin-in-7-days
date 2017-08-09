@@ -72,20 +72,35 @@ exports.reply = function *(next) {
 				url: 'https://zh.wikipedia.org/zh-tw/PIC%E5%BE%AE%E6%8E%A7%E5%88%B6%E5%99%A8'
 */			}]
 		}
-		else if (content === '5') {  // 測試 回覆 上傳的臨時素材
+		else if (content === '5') {  // 測試 上傳的臨時素材 (圖片)，回覆 圖片消息
+			// 必須先上傳 臨時素材 (圖片)，取得 mdeia_id
 			var data = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png')
 
 			reply = {
 				type: 'image',
 				mediaId: data.media_id
 			}
+		}
+		else if (content === '6') {  // 測試 上傳的臨時素材 (視頻)，回覆 視頻消息
+			// 必須先上傳 臨時素材 (視頻)，取得 mdeia_id
+			var data = yield wechatApi.uploadMaterial('video', __dirname + '/media/charmy.mp4')
+
+			reply = {
+				type: 'video',
+				title: '回覆視頻',
+				description: 'charmy',
+				mediaId: data.media_id
+			}
+
+			// TODO ONLY for Debugging
+			console.log('reply: ', reply)
 		} // if-else
 
 		this.body = reply
 	} // else if (message.MsgType === 'text')
 	else {
-		// TODO 尚未處理的 MsgType
-		console.log('尚未處理的 MsgType: ' + message.MsgType)
+		// TODO 尚未處理的 Incoming MsgType
+		console.log('尚未處理的 Incoming MsgType: ' + message.MsgType)
 	} // if-else (messsage.msgType)
 
 	yield next
