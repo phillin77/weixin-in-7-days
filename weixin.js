@@ -246,6 +246,9 @@ exports.reply = function *(next) {
 
 			var tags = yield wechatApi.fetchTags()
 			console.log("tags: ", tags)
+
+			var tagList = yield wechatApi.getTagListOfUserId(message.FromUserName)
+			console.log("tag list of me: ", tagList)			
 				
 			reply = "12, 測試結果參 console.log"
 
