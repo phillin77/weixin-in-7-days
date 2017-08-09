@@ -1,9 +1,9 @@
 /**
  * WeChat API 的封裝
  * start:  2017.08.08
- * update: 2017.08.08
+ * update: 2017.08.09
  * version:
- *     2017.08.08 [ADD]  1st Version
+ *     2017.08.09 [ADD]  1st Version
  */
 
 'use strict'
@@ -18,6 +18,8 @@ var request = Promise.promisify(require("request"), {multiArgs: true});
 Promise.promisifyAll(request, {multiArgs: true})
 
 var fs = require('fs')
+var _ = require('lodash')
+
 
 var util = require('./wechat_util')
 
@@ -26,8 +28,18 @@ const prefix = 'https://api.weixin.qq.com/cgi-bin/'
 const api = {
 	// 获取access_token (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183)
 	accessToken: prefix + 'token?grant_type=client_credential',
-	// 臨時素材 (只保留3天) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-	upload: prefix + 'media/upload?'
+	temporary: {
+		// 臨時素材 (只保留3天) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
+		upload: prefix + 'media/upload?'
+	},
+	permanent: {
+		// 永久素材 (有數量與容量限制) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
+		upload: prefix + 'material/add_material?',
+		// 永久圖文素材 (有數量與容量限制) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
+		uploadNews: prefix + 'material/add_news?',
+		// 上传图文消息内的图片获取URL ()https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
+		uploadNewsPic: prefix + 'media/uploadimg?'
+	}
 } // api
 
 /**
@@ -139,23 +151,60 @@ Wechat.prototype.updateAccessToken = function() {
 /**
  * 上傳 臨時素材
  * @param  {[string]} type   'image' | 'voice' / 'video' / 'thumb'
- * @param  {[type]} filepath [description]
+ * @param  {[type]} material   如果是臨時素材，則傳入 filepath； 如果是永久素材，則
+ * @param  {[object]} permanent  上傳永久素材的設定 (optinal for 臨時素材)
  * @return {[type]}          [description]
  *
  * reference: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726
  */
-Wechat.prototype.uploadMaterial = function(type, filepath) {
+Wechat.prototype.uploadMaterial = function(type, material, permanent) {
 	var that = this
-	var form = {
-		media: fs.createReadStream(filepath)
+	var form = {}
+	var uploadUrl = api.temporary.upload
+
+	if (permanent) {
+		uploadUrl = api.permanent.upload
+
+		_.extend(form, permanent)
+	}
+
+	if (type === 'pic') {
+		uploadUrl = api.permanent.uploadNewsPic
+	}
+
+	if (type === 'news') {
+		uploadUrl = api.permanent.uploadNews
+		form = material
+	}
+	else {
+		form.media = fs.createReadStream(material)
 	}
 
 	return new Promise(function(resolve, reject) {
 		that
 		  .fetchAccessToken()
 		  .then(function(data) {
-		  	var url = api.upload + 'access_token=' + data.access_token + '&type=' + type
+		  	var url = uploadUrl + 'access_token=' + data.access_token
+		  	if (!permanent) {
+				url += '&type=' + type
+		  	}
+		  	else {
+		  		form.access_token = data.access_token
+		  	}
 			
+			var options = {
+				method: 'POST',
+				url: url,
+				json: true
+			}
+
+			if (type === 'news') {
+				options.body = form
+			}
+			else {
+				options.formData = form
+			}
+
 			// TODO ONLY for Debugging
 			// console.log('url: ' + url)
 

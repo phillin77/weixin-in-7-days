@@ -1,9 +1,9 @@
 /**
  * WeiXin 業務面處理邏輯 / Generator
  * start:  2017.08.08
- * update: 2017.08.08
+ * update: 2017.08.09
  * version:
- *     2017.08.08 [ADD]  1st Version
+ *     2017.08.09 [ADD]  1st Version
  */
 
 'use strict'
@@ -106,9 +106,38 @@ exports.reply = function *(next) {
 				// hqMusicUrl: '',
 				thumbMediaId: data.media_id
 			}
+		}
+		else if (content === '8') {  // 測試 上傳的永久素材 (圖片)，回覆 圖片消息
+			// 必須先上傳 永久素材 (圖片)，取得 mdeia_id
+			var permanent = {type: 'image'}
+			var data = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png', permanent)
+
+			reply = {
+				type: 'image',
+				mediaId: data.media_id
+			}
+		}
+		else if (content === '9') {  // 測試 上傳的永久素材 (視頻)，回覆 視頻消息
+			// 必須先上傳 永久素材 (視頻)，取得 mdeia_id
+			var permanent = {
+				type: 'video',
+				description: '{ "title": "charmy", "introduction": "永久素材視頻 charmy"}'
+			}
+			var data = yield wechatApi.uploadMaterial('video', __dirname + '/media/charmy.mp4')
+
+			// TODO ONLY for Debugging
+			console.log('data: ', data)
+
+			reply = {
+				type: 'video',
+				title: '回覆視頻',
+				description: 'charmy',
+				mediaId: data.media_id
+			}
 
 			// TODO ONLY for Debugging
 			console.log('reply: ', reply)
+
 		} // if-else
 
 		this.body = reply

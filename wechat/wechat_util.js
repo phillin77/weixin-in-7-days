@@ -80,7 +80,7 @@ exports.tpl = function(content, message) {
 	info.fromUserName = toUserName
 
 	// TODO ONLY for Debugging
-	console.log("tpl info: ", info)
+	// console.log("tpl info: ", info)
 
 	return tpl.compile(info)
 } // tpl
