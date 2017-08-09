@@ -51,6 +51,32 @@ const api = {
 		count: prefix + 'material/get_materialcount?',
 		// 获取素材列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738734)
 		batch: prefix + 'material/batchget_material?'
+	},
+	// 用户标签管理 (原本好像叫 group 用户分組管理，現在改成 tags)
+	tags: {
+		// 创建标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		create: prefix + 'tags/create?',
+		// 获取公众号已创建的标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		fetch: prefix + 'tags/get?',
+		// 编辑标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		update: prefix + 'tags/update?',
+		// 删除标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		del: prefix + 'tags/delete?',
+		// 获取标签下粉丝列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		getUser: prefix + 'user/tag/get?',
+
+		// TODO 用户管理 尚未完整實作
+		// 批量为用户打标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		batchTagging: prefix + 'tags/members/batchtagging?',
+		// 批量为用户取消标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		batchUnTagging: prefix + 'tags/members/batchuntagging?',
+		// 获取用户身上的标签列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
+		getIdList: prefix + 'tags/getidlist?'
+
+		// 舊版 API 的 Group 功能提供的
+		// check: prefix + 'group/getid?',
+		// move: prefix + 'group/members/update?',
+		// batchUpdate: prefix + 'group/members/batchupdate?',
 	}
 } // api
 
@@ -494,6 +520,236 @@ Wechat.prototype.batchMaterial = function(options) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // batchMaterial
+
+/**
+ * 创建标签
+ * @param  {[type]} name
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837
+ */
+Wechat.prototype.createTag = function(name) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.tags.create + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			var form = {
+				"tag": {
+					"name": name
+				}
+			}
+
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Create Tag fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // createTag
+
+/**
+ * 获取公众号已创建的标签
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837
+ */
+Wechat.prototype.fetchTag = function() {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.tags.get + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			request({method: 'GET', url: url, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Get Tag fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // fetchTag
+
+/**
+ * 编辑标签
+ * @param  {[type]} tagId
+ * @param  {[type]} name
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837
+ */
+Wechat.prototype.updateTag = function(tagId, name) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.tags.update + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			var form = {
+				"tag": {
+					"id": tagId,
+					"name": name
+				}
+			}
+
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Update Tag fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // updateTag
+
+/**
+ * 删除标签
+ * @param  {[type]} tagId
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837
+ */
+Wechat.prototype.deleteTag = function(tagId) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.tags.del + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			var body = {
+				"tag": {
+					"id": tagId
+				}
+			}
+
+			request({method: 'POST', url: url, body: body, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Delete Tag fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // deleteTag
+
+/**
+ * 获取标签下粉丝列表
+ * @param  {[type]} tagId
+ * @param  {[type]} next_openid  第一个拉取的OPENID，不填默认从头开始拉取
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837
+ */
+Wechat.prototype.getTagUsers = function(tagId, next_openid) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.tags.getUser + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			var formData = {
+				"tagid": tagId,
+				"next_openid": next_openid
+			}
+			
+			request({method: 'GET', url: url, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Get Tag Users fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // getTagUsers
 
 Wechat.prototype.reply = function() {
 	var content = this.body
