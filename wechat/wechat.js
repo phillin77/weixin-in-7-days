@@ -30,7 +30,9 @@ const api = {
 	accessToken: prefix + 'token?grant_type=client_credential',
 	temporary: {
 		// 臨時素材 (只保留3天) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-		upload: prefix + 'media/upload?'
+		upload: prefix + 'media/upload?',
+		// 臨時素材 (只保留3天) 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
+		fetch: prefix + 'media/get?'
 	},
 	permanent: {
 		// 永久素材 (有數量與容量限制) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
@@ -38,7 +40,9 @@ const api = {
 		// 永久圖文素材 (有數量與容量限制) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
 		uploadNews: prefix + 'material/add_news?',
 		// 上传图文消息内的图片获取URL ()https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
-		uploadNewsPic: prefix + 'media/uploadimg?'
+		uploadNewsPic: prefix + 'media/uploadimg?',
+		// 永久圖文素材 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
+		fetch: prefix + 'material/get_material?'
 	}
 } // api
 
@@ -156,7 +160,9 @@ Wechat.prototype.updateAccessToken = function() {
  * @param  {[object]} permanent  上傳永久素材的設定 (optinal for 臨時素材)
  * @return {[type]}          [description]
  *
- * reference: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729
  */
 Wechat.prototype.uploadMaterial = function(type, material, permanent) {
 	var that = this
@@ -229,6 +235,44 @@ Wechat.prototype.uploadMaterial = function(type, material, permanent) {
 		  }) // fetchAccessToken
 	}) // return new Promise
 } // uploadMaterial
+
+/**
+ * 獲取資源 臨時素材 or 永久素材
+ * @param  {[type]} mediaId   Media ID
+ * @param  {[string]} type   臨時素材：'image' | 'voice' | 'video' | 'thumb'; 永久素材：'image' | 'video' | 'pic' | 'news'
+ * @param  {[object]} permanent  永久素材的設定 (optinal for 臨時素材)
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729
+ */
+Wechat.prototype.fetchMaterial = function(mediaId, type, permanent) {
+	var that = this
+	var form = {}
+	var fetchdUrl = api.temporary.fetch
+
+	if (permanent) {
+		fetchdUrl = api.permanent.fetch
+	}
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = fetchdUrl + 'access_token=' + data.access_token + '&media_id=' + mediaId
+		  	if (!permanent && type === 'video') {
+		  		// 獲取資源：臨時素材 (視頻)，使用的是 http:// 而不是 https:
+		  		url = url.replace('https://', 'http://')
+		  	}
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			resolve(url)
+\		  }) // fetchAccessToken
+	}) // return new Promise
+} // fetchMaterial
 
 Wechat.prototype.reply = function() {
 	var content = this.body
