@@ -10,6 +10,7 @@
 
 var path = require('path')
 var util = require('./libs/util')
+var fs = require('fs')
 
 // 儲存 access_token 的檔案
 const WECHAT_FILE = path.join(__dirname, './config/wechat.txt')
@@ -23,10 +24,29 @@ const config = {
 
 		// 將 access_token 從實體媒體中讀出
 		getAccessToken: function() {
+			var dir = path.join(__dirname, './config')
+			if (!fs.existsSync(dir)){ 
+				fs.mkdirSync(dir); 
+			}
+			if (!fs.existsSync(WECHAT_FILE)) {
+ 				// Create Empty File
+				fs.open(WECHAT_FILE, "wx", function (err, fd) {
+					// handle error
+					fs.close(fd, function (err) {
+					// handle error
+					});
+				});
+			}
+
 			return util.readFileAsync(WECHAT_FILE)
 		},
 		// 將 access_token 存回實體媒體
 		saveAccessToken: function(data) {
+			var dir = path.join(__dirname, './config')
+			if (!fs.existsSync(dir)){ 
+				fs.mkdirSync(dir); 
+			}
+
 			data = JSON.stringify(data)
 			return util.writeFileAsync(WECHAT_FILE, data)
 		}
