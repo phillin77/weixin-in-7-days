@@ -42,11 +42,15 @@ const api = {
 		// 上传图文消息内的图片获取URL ()https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
 		uploadNewsPic: prefix + 'media/uploadimg?',
 		// 永久素材 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-		fetch: prefix + 'material/get_material?'
+		fetch: prefix + 'material/get_material?',
 		// 刪除 永久素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-		del: prefix + 'material/del_material?'
+		del: prefix + 'material/del_material?',
 		// 修改 永久图文素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738732)
-		updateNews: prefix + 'material/update_news?'
+		updateNews: prefix + 'material/update_news?',
+		// 获取素材总数 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738733)
+		count: prefix + 'material/get_materialcount?',
+		// 获取素材列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738734)
+		batch: prefix + 'material/batchget_material'
 	}
 } // api
 
@@ -368,6 +372,91 @@ Wechat.prototype.updateMaterial = function(mediaId, news) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // updateMaterial
+
+/**
+ * 获取素材总数
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738733
+ */
+Wechat.prototype.countMaterial = function() {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.permanent.count + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'GET', url: url, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Update news material fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // countMaterial
+
+/**
+ * 获取素材列表
+ * @param  {[type]} options
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738734
+ */
+Wechat.prototype.batchMaterial = function(options) {
+	var that = this
+
+	options.type = options.type || 'image'
+	options.offset = options.offset || 0
+	options.count = options.count || 1
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.permanent.batch + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'POST', url: url, body: options, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Update news material fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // batchMaterial
 
 Wechat.prototype.reply = function() {
 	var content = this.body
