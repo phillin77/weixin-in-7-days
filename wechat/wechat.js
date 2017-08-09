@@ -165,7 +165,7 @@ Wechat.prototype.updateAccessToken = function() {
  * @param  {[string]} type   臨時素材：'image' | 'voice' | 'video' | 'thumb'; 永久素材：'image' | 'video' | 'pic' | 'news'
  * 
  * @param  {[type]} material   如果是臨時素材，則傳入 filepath； 如果是永久素材，則
- * @param  {[object]} permanent  上傳永久素材的設定 (optinal for 臨時素材)
+ * @param  {[object]} permanent  上傳永久素材的設定 (optinal for 臨時素材, 不需傳入)
  * @return {[type]}          [description]
  *
  * reference: 
@@ -223,7 +223,7 @@ Wechat.prototype.uploadMaterial = function(type, material, permanent) {
 			// TODO ONLY for Debugging
 			// console.log('url: ' + url)
 
-			request({method: 'POST', url: url, formData: form, json: true})
+			request(options)
 			.then(function(response) {
 				var _data = response[1]
 
@@ -248,7 +248,7 @@ Wechat.prototype.uploadMaterial = function(type, material, permanent) {
  * 獲取資源 臨時素材 or 永久素材
  * @param  {[type]} mediaId   Media ID
  * @param  {[string]} type   臨時素材：'image' | 'voice' | 'video' | 'thumb'; 永久素材：'image' | 'video' | 'pic' | 'news'
- * @param  {[object]} permanent  永久素材的設定 (optinal for 臨時素材)
+ * @param  {[object]} permanent  永久素材的設定 (optinal for 臨時素材, 不需傳入)
  * @return {[type]}          [description]
  *
  * reference: 
@@ -269,16 +269,53 @@ Wechat.prototype.fetchMaterial = function(mediaId, type, permanent) {
 		  .fetchAccessToken()
 		  .then(function(data) {
 		  	var url = fetchdUrl + 'access_token=' + data.access_token + '&media_id=' + mediaId
-		  	if (!permanent && type === 'video') {
-		  		// 獲取資源：臨時素材 (視頻)，使用的是 http:// 而不是 https:
-		  		url = url.replace('https://', 'http://')
-		  	}
 
 			// TODO ONLY for Debugging
 			// console.log('url: ' + url)
 
-			resolve(url)
-\		  }) // fetchAccessToken
+			var form = {}
+			var options = {
+				method: 'POST', 
+				url: url, 
+				json: true
+			}
+
+			if (permanent) {
+				form.media_id = mediaId,
+				form.access_token = data.access_token,
+				options.body = form
+			}
+			else {
+			  	if (type === 'video') {
+			  		// 獲取資源：臨時素材 (視頻)，使用的是 http:// 而不是 https:
+			  		url = url.replace('https://', 'http://')
+			  	}
+
+				url += '&media_id=' + mediaId
+			}
+
+			if (type === 'news' || type === 'video') {
+				request(options)
+				.then(function(response) {
+					var _data = response[1]
+
+					// TODO ONLY for Debugging
+					// console.log('_data: ', _data)
+					
+					if (_data) {
+						resolve(_data)
+					}
+					else {
+						throw new Error('Fetch material fails')
+					}
+				})
+				.catch(function(err) {
+					reject(err)
+				})
+			} else {
+				resolve(url)
+			} // if-else
+		}) // fetchAccessToken
 	}) // return new Promise
 } // fetchMaterial
 
@@ -403,7 +440,7 @@ Wechat.prototype.countMaterial = function() {
 					resolve(_data)
 				}
 				else {
-					throw new Error('Update news material fails')
+					throw new Error('Count material fails')
 				}
 			})
 			.catch(function(err) {
@@ -448,7 +485,7 @@ Wechat.prototype.batchMaterial = function(options) {
 					resolve(_data)
 				}
 				else {
-					throw new Error('Update news material fails')
+					throw new Error('Batch get material fails')
 				}
 			})
 			.catch(function(err) {

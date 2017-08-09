@@ -125,15 +125,53 @@ exports.reply = function *(next) {
 			}
 			var data = yield wechatApi.uploadMaterial('video', __dirname + '/media/charmy.mp4')
 
-			// TODO ONLY for Debugging
-			console.log('data: ', data)
-
 			reply = {
 				type: 'video',
 				title: '回覆視頻',
 				description: 'charmy',
 				mediaId: data.media_id
 			}
+		}
+		else if (content === '10') {  // 測試 上傳的永久素材 (視頻)，回覆 視頻消息
+			// 必須先上傳 永久素材 (圖片)，取得 mdeia_id
+			var permanent = {}
+			var picData = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png', permanent)
+
+			// TODO ONLY for Debugging
+			console.log('picData: ', picData)
+
+			var media = {
+				articles: [{
+					 title: 'WeChat Icon',
+					 thumb_media_id: picData.media_id,
+					 author: 'Me',
+					 digest: '摘要',
+					 show_cover_pic: 1,
+					 content: '內容',
+					 content_source_url: 'https://github.com'
+				}]
+			}
+
+			permanent = {}
+			var data = yield wechatApi.uploadMaterial('news', media, permanent)
+			data = yield wechatApi.fetchMaterial(data.media_id, 'news', permanent)
+
+			// TODO ONLY for Debugging
+			console.log('data: ', data)
+
+			var items = data.news_item
+			var news = []
+
+			items.forEach(function(item) {
+				news.push({
+					title: item.title,
+					decription: item.digest,
+					picUrl: picData.url,
+					url: item.url
+				})
+			})
+
+			reply = news
 
 			// TODO ONLY for Debugging
 			console.log('reply: ', reply)
