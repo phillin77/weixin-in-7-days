@@ -575,14 +575,14 @@ Wechat.prototype.createTag = function(name) {
  * reference: 
  *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837
  */
-Wechat.prototype.fetchTag = function() {
+Wechat.prototype.fetchTags = function() {
 	var that = this
 
 	return new Promise(function(resolve, reject) {
 		that
 		  .fetchAccessToken()
 		  .then(function(data) {
-		  	var url = api.tags.get + 'access_token=' + data.access_token
+		  	var url = api.tags.fetch + 'access_token=' + data.access_token
 
 			// TODO ONLY for Debugging
 			// console.log('url: ' + url)
@@ -606,7 +606,7 @@ Wechat.prototype.fetchTag = function() {
 			})
 		}) // fetchAccessToken
 	}) // return new Promise
-} // fetchTag
+} // fetchTags
 
 /**
  * 编辑标签

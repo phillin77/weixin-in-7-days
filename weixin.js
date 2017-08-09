@@ -238,6 +238,17 @@ exports.reply = function *(next) {
 
 			reply = "11, 測試結果參 console.log"
 
+		}
+		else if (content === '12') {  // 測試 用户标签管理
+			var name = 'wechat'
+			var tag = yield wechatApi.createTag(name)
+			console.log("create tag [", name, ']: ', tag)
+
+			var tags = yield wechatApi.fetchTags()
+			console.log("tags: ", tags)
+				
+			reply = "12, 測試結果參 console.log"
+
 		} // if-else
 
 		this.body = reply
