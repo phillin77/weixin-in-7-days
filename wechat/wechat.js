@@ -43,6 +43,8 @@ const api = {
 		uploadNewsPic: prefix + 'media/uploadimg?',
 		// 永久圖文素材 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
 		fetch: prefix + 'material/get_material?'
+		// 刪除 永久圖文素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
+		del: prefix + 'material/del_material?'
 	}
 } // api
 
@@ -273,6 +275,50 @@ Wechat.prototype.fetchMaterial = function(mediaId, type, permanent) {
 \		  }) // fetchAccessToken
 	}) // return new Promise
 } // fetchMaterial
+
+/**
+ * 刪除 永久素材
+ * @param  {[type]} mediaId   永久素材 Media ID
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738731
+ */
+Wechat.prototype.deleteMaterial = function(mediaId) {
+	var that = this
+	var form = {
+		media_id: mediaId
+	}
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.permanent.del + 'access_token=' + data.access_token + '&media_id=' + mediaId
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Delete material fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // deleteMaterial
 
 Wechat.prototype.reply = function() {
 	var content = this.body
