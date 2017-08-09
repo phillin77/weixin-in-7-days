@@ -19,6 +19,8 @@ var wechatApi = new Wechat(config.wechat)
 exports.reply = function *(next) {
 	var message = this.weixin 
 
+	// Note: 不同類型的訊息的 reply 內容與 key 的名稱參：tpl.js 中 content.KEY
+
 	if (message.MsgType == 'event') {
 		if (message.Event === 'subscribe') {
 			if (message.EventKey) {
@@ -90,6 +92,19 @@ exports.reply = function *(next) {
 				title: '回覆視頻',
 				description: 'charmy',
 				mediaId: data.media_id
+			}
+		}
+		else if (content === '7') {  // 測試 上傳的臨時素材 (音樂, 封面圖)，回覆 音樂消息
+			// 必須先上傳 臨時素材 (封面圖)，取得 mdeia_id
+			var data = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png')
+
+			reply = {
+				type: 'music',
+				title: '回覆音樂內容',
+				description: '聽聽音樂',
+				musicUrl: 'http://mpge.5nd.com/2015/2015-9-12/66325/1.mp3',
+				// hqMusicUrl: '',
+				thumbMediaId: data.media_id
 			}
 
 			// TODO ONLY for Debugging
