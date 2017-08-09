@@ -41,10 +41,12 @@ const api = {
 		uploadNews: prefix + 'material/add_news?',
 		// 上传图文消息内的图片获取URL ()https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
 		uploadNewsPic: prefix + 'media/uploadimg?',
-		// 永久圖文素材 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
+		// 永久素材 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
 		fetch: prefix + 'material/get_material?'
-		// 刪除 永久圖文素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
+		// 刪除 永久素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
 		del: prefix + 'material/del_material?'
+		// 修改 永久图文素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738732)
+		updateNews: prefix + 'material/update_news?'
 	}
 } // api
 
@@ -319,6 +321,53 @@ Wechat.prototype.deleteMaterial = function(mediaId) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // deleteMaterial
+
+/**
+ * 修改 永久图文素材
+ * @param  {[type]} mediaId   永久圖文素材 Media ID
+ * @param  {[type]} news  新的圖文素材
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738732
+ */
+Wechat.prototype.updateMaterial = function(mediaId, news) {
+	var that = this
+	var form = {
+		media_id: mediaId
+	}
+
+	_.extend(form, news)
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.permanent.updateNews + 'access_token=' + data.access_token + '&media_id=' + mediaId
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Update news material fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // updateMaterial
 
 Wechat.prototype.reply = function() {
 	var content = this.body
