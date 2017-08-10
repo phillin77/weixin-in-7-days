@@ -87,7 +87,9 @@ const api = {
 		// 获取用户基本信息（包括UnionID机制）(https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
 		fetch: prefix + 'user/info?',
 		// 批量获取用户基本信息 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
-		batchFetch: prefix + 'user/info/batchget?'
+		batchFetch: prefix + 'user/info/batchget?',
+		// 获取用户列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840)
+		list: prefix + 'user/get?'
 	}
 } // api
 
@@ -1008,6 +1010,50 @@ Wechat.prototype.fetchUsers = function(openIds, lang) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // fetchUsers
+
+/**
+ * 获取用户列表
+ * @param  {[type]} openId  第一个拉取的OPENID，不填默认从头开始拉取
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840
+ */
+Wechat.prototype.listUsers = function(openId) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.user.list + 'access_token=' + data.access_token
+		  	if (openId) {  // 有傳入 openId 才指定，沒有傳入，默认从头开始拉取
+				url += '&next_openid=' + openId
+			}
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			request({method: 'GET', url: url, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('List Users fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // listUsers
 
 Wechat.prototype.reply = function() {
 	var content = this.body
