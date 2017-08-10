@@ -310,7 +310,28 @@ exports.reply = function *(next) {
 
 			console.log('群發 文字訊息 msgData', msgData)
 			reply = '群發 文字訊息 送出'
+		}
+		else if (content === '16') {  // 測試 预览接口【订阅号与服务号认证后均可用】
+			var msgData
+			var openId = message.FromUserName
 
+			// 圖文訊息
+			// var mpnews = {
+			// 	media_id: 'B1OCpyGJkrbFRueRrzH50Idl_Qzyoz_fQwZY1WK1xmQ',
+			// }
+			// msgData = yield wechatApi.previewMass('mpnews', mpnews, openId)
+
+			// console.log('預覽群發 圖文訊息 msgData', msgData)
+			// reply = '預覽群發 圖文訊息 送出'
+
+			// 文字訊息
+			var text = {
+				"content": 'Hello WeChat'
+			}
+			msgData = yield wechatApi.previewMass('text', text, openId)
+
+			console.log('預覽群發 文字訊息 msgData', msgData)
+			reply = '預覽群發 文字訊息 送出'
 
 		} // if-else
 
