@@ -1,9 +1,9 @@
 /**
  * WeChat API 的封裝
  * start:  2017.08.08
- * update: 2017.08.10
+ * update: 2017.08.11
  * version:
- *     2017.08.10 [ADD]  1st Version
+ *     2017.08.11 [ADD]  1st Version
  */
 
 'use strict'
@@ -94,7 +94,9 @@ const api = {
 	// 群发消息
 	mass: {
 		// 根据标签进行群发【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		sendAllByTag: prefix + 'message/mass/sendall?'
+		sendAllByTag: prefix + 'message/mass/sendall?',
+		// 根据OpenID列表群发【订阅号不可用，服务号认证后可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
+		sendAllByOpenIds: prefix + 'message/mass/send?'
 	}
 } // api
 
@@ -1118,6 +1120,55 @@ Wechat.prototype.sendByTag = function(type, message, tagId) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // sendByTag
+
+/**
+ * 根据OpenID列表群发【订阅号不可用，服务号认证后可用】
+ * @param  {[type]} type  群发的消息类型，图文消息为mpnews，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
+ * @param  {[type]} message  訊息內容
+ * @param  {[type]} openIds  填写图文消息的接收者，一串OpenID列表，OpenID最少2个，最多10000个
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21
+ */
+Wechat.prototype.sendByOpenIds = function(type, message, openIds) {
+	var that = this
+	var msg = {
+		msgtype: type,
+		touser: openIds
+	}
+
+	msg[type] = message
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.mass.sendAllByOpenIds + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			request({method: 'POST', url: url, body: msg, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Send to OpenIds fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // sendByOpenIds
 
 Wechat.prototype.reply = function() {
 	var content = this.body
