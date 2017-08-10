@@ -79,6 +79,11 @@ const api = {
 		// check: prefix + 'group/getid?',
 		// move: prefix + 'group/members/update?',
 		// batchUpdate: prefix + 'group/members/batchupdate?',
+	},
+	user: {
+		// 设置用户备注名 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140838)
+		// 只开放给微信认证的服务号
+		remark: prefix + 'user/info/updateremark?'
 	}
 } // api
 
@@ -891,6 +896,54 @@ Wechat.prototype.getTagListOfUserId = function(openId) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // getTagListOfUserId
+
+/**
+ * 设置用户备注名
+ * (只开放给微信认证的服务号)
+ * @param  {[type]} openId  用户标识
+ * @param  {[type]} remark  新的备注名，长度必须小于30字符 
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140838
+ */
+Wechat.prototype.remarkUser = function(openId, remark) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.user.remark + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			var form = {
+				"openid": openId,
+				"remark": remark
+			}
+
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Remark User fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // remarkUser
 
 Wechat.prototype.reply = function() {
 	var content = this.body
