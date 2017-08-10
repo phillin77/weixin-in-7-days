@@ -100,7 +100,9 @@ const api = {
 		// 根据OpenID列表群发【订阅号不可用，服务号认证后可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
 		sendAllByOpenIds: prefix + 'message/mass/send?',
 		// 预览接口【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		preview: prefix + 'message/mass/preview?'
+		preview: prefix + 'message/mass/preview?',
+		// 查询群发消息发送状态【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
+		check: prefix + 'message/mass/get?'
 	}
 } // api
 
@@ -1269,6 +1271,51 @@ Wechat.prototype.previewMass = function(type, message, openId) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // previewMass
+
+/**
+ * 查询群发消息发送状态【订阅号与服务号认证后均可用】
+ * @param  {[type]} msgId  群发消息后返回的消息id
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21
+ */
+Wechat.prototype.checkMass = function(msgId) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.mass.check + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			var form = {
+				"msg_id": msgId
+			}
+			
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) { 
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Check Mass fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // checkMass
 
 Wechat.prototype.reply = function() {
 	var content = this.body

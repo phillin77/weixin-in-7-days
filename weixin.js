@@ -1,9 +1,9 @@
 /**
  * WeiXin 業務面處理邏輯 / Generator
  * start:  2017.08.08
- * update: 2017.08.10
+ * update: 2017.08.11
  * version:
- *     2017.08.10 [ADD]  1st Version
+ *     2017.08.11 [ADD]  1st Version
  */
 
 'use strict'
