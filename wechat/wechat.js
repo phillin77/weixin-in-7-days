@@ -103,6 +103,17 @@ const api = {
 		preview: prefix + 'message/mass/preview?',
 		// 查询群发消息发送状态【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
 		check: prefix + 'message/mass/get?'
+	},
+	// 自定义菜单
+	menu: {
+		// 自定义菜单创建接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013)
+		create: prefix + 'menu/create?',
+		// 自定义菜单查询接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014)
+		get: prefix + 'menu/get?',
+		// 自定义菜单删除接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141015)
+		del: prefix + 'menu/delete?',
+		// 获取自定义菜单配置接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695)
+		current: prefix + 'get_current_selfmenu_info?',
 	}
 } // api
 
@@ -1316,6 +1327,169 @@ Wechat.prototype.checkMass = function(msgId) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // checkMass
+
+/**
+ * 自定义菜单创建接口
+ * @param  {[type]} menu
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
+ */
+Wechat.prototype.createMenu = function(menu) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.menu.create + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			var form = menu
+			
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) { 
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Create Menu fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // createMenu
+
+/**
+ * 自定义菜单查询接口
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014
+ */
+Wechat.prototype.getMenu = function() {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.menu.get + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'GET', url: url, json: true})
+			.then(function(response) { 
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Get Menu fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // getMenu
+
+/**
+ * 自定义菜单删除接口
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141015
+ */
+Wechat.prototype.deleteMenu = function() {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.menu.del + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'GET', url: url, json: true})
+			.then(function(response) { 
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Delete Menu fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // deleteMenu
+
+/**
+ * 获取自定义菜单配置接口
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695
+ */
+Wechat.prototype.getCurrentMenu = function() {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.menu.current + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'GET', url: url, json: true})
+			.then(function(response) { 
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Get Current Menu fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // getCurrentMenu
 
 Wechat.prototype.reply = function() {
 	var content = this.body
