@@ -98,7 +98,9 @@ const api = {
 		// 根据标签进行群发【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
 		sendAllByTag: prefix + 'message/mass/sendall?',
 		// 根据OpenID列表群发【订阅号不可用，服务号认证后可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		sendAllByOpenIds: prefix + 'message/mass/send?'
+		sendAllByOpenIds: prefix + 'message/mass/send?',
+		// 预览接口【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
+		preview: prefix + 'message/mass/preview?'
 	}
 } // api
 
@@ -1217,6 +1219,56 @@ Wechat.prototype.deleteMass = function(msgId, articleIdx) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // deleteMass
+
+/**
+ * 预览接口【订阅号与服务号认证后均可用】
+ * 开发者可通过该接口发送消息给指定用户，在手机端查看消息的样式和排版。
+ * @param  {[type]} type  群发的消息类型，图文消息为mpnews，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
+ * @param  {[type]} message  訊息內容
+ * @param  {[type]} openId  接收消息用户对应该公众号的openid，该字段也可以改为towxname，以实现对微信号的预览
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21
+ */
+Wechat.prototype.previewMass = function(type, message, openId) {
+	var that = this
+	var msg = {
+		msgtype: type,
+		touser: openId
+	}
+
+	msg[type] = message
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.mass.preview + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			request({method: 'POST', url: url, body: msg, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Preview Mass fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // previewMass
 
 Wechat.prototype.reply = function() {
 	var content = this.body
