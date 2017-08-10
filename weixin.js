@@ -278,6 +278,12 @@ exports.reply = function *(next) {
 			console.log(users)
 
 			reply = JSON.stringify(users)
+		}
+		else if (content === '14') {  // 測試 获取用户列表
+			var userList = yield wechatApi.listUsers()
+			console.log(userList)
+
+			reply = JSON.stringify(userList)
 		} // if-else
 
 		this.body = reply
