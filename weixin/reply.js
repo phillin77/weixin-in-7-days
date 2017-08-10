@@ -1,4 +1,4 @@
-/**
+ /**
  * WeiXin 業務面處理邏輯 / Generator
  * start:  2017.08.08
  * update: 2017.08.11
@@ -8,8 +8,9 @@
 
 'use strict'
 
-var config = require('./config')
-var Wechat = require('./wechat/wechat')
+var path = require('path')
+var config = require( path.join(__dirname, '../config') )
+var Wechat = require( path.join(__dirname, '../wechat/wechat') )
 var wechatApi = new Wechat(config.wechat)
 
 /**
@@ -76,7 +77,7 @@ exports.reply = function *(next) {
 		}
 		else if (content === '5') {  // 測試 上傳的臨時素材 (圖片)，回覆 圖片消息
 			// 必須先上傳 臨時素材 (圖片)，取得 mdeia_id
-			var data = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png')
+			var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'))
 
 			reply = {
 				type: 'image',
@@ -85,7 +86,7 @@ exports.reply = function *(next) {
 		}
 		else if (content === '6') {  // 測試 上傳的臨時素材 (視頻)，回覆 視頻消息
 			// 必須先上傳 臨時素材 (視頻)，取得 mdeia_id
-			var data = yield wechatApi.uploadMaterial('video', __dirname + '/media/charmy.mp4')
+			var data = yield wechatApi.uploadMaterial('video', path.join(__dirname, '../media/charmy.mp4'))
 
 			reply = {
 				type: 'video',
@@ -96,7 +97,7 @@ exports.reply = function *(next) {
 		}
 		else if (content === '7') {  // 測試 上傳的臨時素材 (音樂, 封面圖)，回覆 音樂消息
 			// 必須先上傳 臨時素材 (封面圖)，取得 mdeia_id
-			var data = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png')
+			var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'))
 
 			reply = {
 				type: 'music',
@@ -110,7 +111,7 @@ exports.reply = function *(next) {
 		else if (content === '8') {  // 測試 上傳的永久素材 (圖片)，回覆 圖片消息
 			// 必須先上傳 永久素材 (圖片)，取得 mdeia_id
 			var permanent = {type: 'image'}
-			var data = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png', permanent)
+			var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'), permanent)
 
 			reply = {
 				type: 'image',
@@ -123,7 +124,7 @@ exports.reply = function *(next) {
 				type: 'video',
 				description: '{ "title": "charmy", "introduction": "永久素材視頻 charmy"}'
 			}
-			var data = yield wechatApi.uploadMaterial('video', __dirname + '/media/charmy.mp4')
+			var data = yield wechatApi.uploadMaterial('video', path.join(__dirname, '../media/charmy.mp4'))
 
 			reply = {
 				type: 'video',
@@ -135,7 +136,7 @@ exports.reply = function *(next) {
 		else if (content === '10') {  // 測試 上傳的永久素材 (圖片)，再上傳圖文消息，回覆 圖文消息
 			// 必須先上傳 永久素材 (圖片)，取得 mdeia_id
 			var permanent = {}
-			var picData = yield wechatApi.uploadMaterial('image', __dirname + '/media/wechat.png', permanent)
+			var picData = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'), permanent)
 
 			// TODO ONLY for Debugging
 			// console.log('picData: ', picData)
