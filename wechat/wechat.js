@@ -89,7 +89,9 @@ const api = {
 		// 批量获取用户基本信息 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
 		batchFetch: prefix + 'user/info/batchget?',
 		// 获取用户列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840)
-		list: prefix + 'user/get?'
+		list: prefix + 'user/get?',
+		// 删除群发【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
+		del: prefix + 'message/mass/delete?'
 	},
 	// 群发消息
 	mass: {
@@ -1169,6 +1171,52 @@ Wechat.prototype.sendByOpenIds = function(type, message, openIds) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // sendByOpenIds
+
+/**
+ * 删除群发【订阅号与服务号认证后均可用】
+ * @param  {[type]} msgId  发送出去的消息ID
+ * @param  {[type]} articleIdx  要删除的文章在图文消息中的位置，第一篇编号为1，该字段不填或填0会删除全部文章
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21
+ */
+Wechat.prototype.deleteMass = function(msgId, articleIdx) {
+	var that = this
+	var form = {
+		"msg_id": msgId,
+		"article_idx": articleIdx
+	}
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.mass.del + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Delete Mass fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // deleteMass
 
 Wechat.prototype.reply = function() {
 	var content = this.body
