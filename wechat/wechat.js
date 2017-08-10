@@ -1,9 +1,9 @@
 /**
  * WeChat API 的封裝
  * start:  2017.08.08
- * update: 2017.08.09
+ * update: 2017.08.10
  * version:
- *     2017.08.09 [ADD]  1st Version
+ *     2017.08.10 [ADD]  1st Version
  */
 
 'use strict'
@@ -83,7 +83,11 @@ const api = {
 	user: {
 		// 设置用户备注名 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140838)
 		// 只开放给微信认证的服务号
-		remark: prefix + 'user/info/updateremark?'
+		remark: prefix + 'user/info/updateremark?',
+		// 获取用户基本信息（包括UnionID机制）(https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
+		fetch: prefix + 'user/info?'
+		// 批量获取用户基本信息 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
+		batchFetch: prefix + 'user/info/batchget?'
 	}
 } // api
 
@@ -944,6 +948,69 @@ Wechat.prototype.remarkUser = function(openId, remark) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // remarkUser
+
+/**
+ * 获取用户基本信息（包括UnionID机制）/ 批量获取用户基本信息
+ * @param  {[type]} openIds  單一用户标识  or openIds[openid, lang]
+ * @param  {[type]} lang  (如果沒有傳入，預設值: zh_CN) (當 openIds 傳入是 單一用户标识 才需要傳入)
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839
+ */
+Wechat.prototype.fetchUsers = function(openIds, lang) {
+	var that = this
+
+	// 設定參數預設值
+	lang = lang || 'zh_CN'
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url
+		  	var options = {
+				json: true
+			}
+
+		  	if (_.isArray(openIds)) {  // 如果傳入 openIds 是 array，則呼叫 批量獲取
+		  		url = api.user.batchFetch + 'access_token=' + data.access_token	
+		  		options.url = url
+				options.form = {
+					"user_list": openIds
+				}
+				options.method = 'POST'
+		  	}
+		  	else {  // 如果傳入 openIds 是 單一一個 openId，則呼叫 單一獲取
+		  		url = api.user.fetch + 'access_token=' + data.access_token
+		  				+ '&openid=' + openIds + '&lang=' + lang
+		  		options.url = url
+				options.method = 'GET'
+		  	}
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request(options)
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Batch Fetch Users fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // fetchUsers
 
 Wechat.prototype.reply = function() {
 	var content = this.body
