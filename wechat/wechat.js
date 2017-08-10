@@ -90,6 +90,11 @@ const api = {
 		batchFetch: prefix + 'user/info/batchget?',
 		// 获取用户列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840)
 		list: prefix + 'user/get?'
+	},
+	// 群发消息
+	mass: {
+		// 根据标签进行群发【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
+		sendAllByTag: prefix + 'message/mass/sendall?'
 	}
 } // api
 
@@ -1054,6 +1059,63 @@ Wechat.prototype.listUsers = function(openId) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // listUsers
+
+/**
+ * 群发【订阅号与服务号认证后均可用】
+ * @param  {[type]} openId  第一个拉取的OPENID，不填默认从头开始拉取
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21
+ */
+Wechat.prototype.sendByTag = function(type, message, tagId) {
+	var that = this
+	var msg = {
+		filter: {},
+		msgType: type
+	}
+
+	msg[type] = message
+
+	if (!tagId) {
+		msg.filter.is_to_all = true
+	}
+	else {
+		msg.filter = {
+			"is_to_all": false,
+			"tag_id": tagId
+		}
+	}
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.mass.sendAllByTag + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+			
+			request({method: 'POST', url: url, body: msg, json: true})
+			.then(function(response) {
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Send to Tag fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // sendByTag
 
 Wechat.prototype.reply = function() {
 	var content = this.body
