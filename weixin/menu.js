@@ -28,19 +28,19 @@
 			'type': 'view',
 			'url': 'https://github.com'
 		}, {
-			'name': '掃碼推送事件,測試很長的字串'
+			'name': '掃碼推送事件,測試很長的字串',
 			'type': 'scancode_push',
 			'key': 'qr_scan'
 		}, {
-			'name': '掃碼推送中'
+			'name': '掃碼推送中',
 			'type': 'scancode_waitmsg',
 			'key': 'qr_scan_wait'
 		}, {
-			'name': '彈出系統拍照'
+			'name': '彈出系統拍照',
 			'type': 'pic_sysphoto',
 			'key': 'pic_photo'
 		}, {
-			'name': '彈出拍照或相冊'
+			'name': '彈出拍照或相冊',
 			'type': 'pic_photo_or_album',
 			'key': 'pic_photo_or_album'
 		}]
@@ -51,15 +51,15 @@
 			'type': 'pic_weixin',
 			'key': 'pic_weixin'
 		}, {
-			'name': '地理位置選擇'
+			'name': '地理位置選擇',
 			'type': 'location_select',
 			'key': 'location_select'
 		// }, {
-		// 	'name': '下發圖片消息'
+		// 	'name': '下發圖片消息',
 		// 	'type': 'media_id',
 		// 	'media_id': '必須填入 media_id XXX'
 		// }, {
-		// 	'name': '跳轉圖文消息的 url'
+		// 	'name': '跳轉圖文消息的 url',
 		// 	'type': 'view_limited',
 		// 	'media_id': '必須填入 media_id XXX'
 		}]

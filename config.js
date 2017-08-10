@@ -13,7 +13,7 @@ var util = require('./libs/util')
 var fs = require('fs')
 
 // 儲存 access_token 的檔案
-const WECHAT_FILE = path.join(__dirname, './config/wechat.txt')
+const WECHAT_FILE = path.join(__dirname, './rt/wechat.txt')
 
 // WeChat 開發帳號設定值，與公用函式
 const config = {
@@ -24,7 +24,7 @@ const config = {
 
 		// 將 access_token 從實體媒體中讀出
 		getAccessToken: function() {
-			var dir = path.join(__dirname, './config')
+			var dir = path.join(__dirname, './rt')
 			if (!fs.existsSync(dir)){ 
 				fs.mkdirSync(dir); 
 			}
@@ -42,7 +42,7 @@ const config = {
 		},
 		// 將 access_token 存回實體媒體
 		saveAccessToken: function(data) {
-			var dir = path.join(__dirname, './config')
+			var dir = path.join(__dirname, './rt')
 			if (!fs.existsSync(dir)){ 
 				fs.mkdirSync(dir); 
 			}

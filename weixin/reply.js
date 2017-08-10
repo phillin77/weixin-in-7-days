@@ -9,9 +9,22 @@
 'use strict'
 
 var path = require('path')
-var config = require( path.join(__dirname, '../config') )
+var config = require( path.join(__dirname, '../config.js') )
 var Wechat = require( path.join(__dirname, '../wechat/wechat') )
 var wechatApi = new Wechat(config.wechat)
+
+
+// 創建 自定義菜單
+// Note: 不需每次啟動都創建 menu，只需創建一次，等下次需要更改時再重新執行即可
+// TODO
+// var menu = require('./menu')
+// wechatApi.deleteMenu()
+// .then(function() {
+// 	return wechatApi.createMenu(menu)
+// })
+// .then(function(msg) {
+// 	console.log(msg)
+// })
 
 /**
  * 接收消息-普通消息 reference: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140453
@@ -46,6 +59,45 @@ exports.reply = function *(next) {
 		} // else if (message.Event === 'SCAN')
 		else if (message.Event === 'VIEW') {  // 點擊菜單中的鏈接
 			this.body = '您點擊了菜單中的鏈接： ' + message.EventKey
+		} // else if (message.Event === 'VIEW')
+		else if (message.Event === 'scancode_push') {  // 掃碼推送事件
+			// 推送事件的結構參：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
+			console.log(message.ScanCodeInfo.ScanType)
+			console.log(message.ScanCodeInfo.ScanResult)
+			this.body = '您點擊了菜單中： ' + message.EventKey
+		} // else if (message.Event === 'scancode_push')
+		else if (message.Event === 'scancode_waitmsg') {  // 掃碼推送中
+			// 推送事件的結構參：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
+			console.log(message.ScanCodeInfo.ScanType)
+			console.log(message.ScanCodeInfo.ScanResult)
+			this.body = '您點擊了菜單中： ' + message.EventKey
+		} // else if (message.Event === 'scancode_waitmsg')
+		else if (message.Event === 'pic_sysphoto') {  // 彈出系統拍照
+			// 推送事件的結構參：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
+			console.log(message.SendPicsInfo.PicList)
+			console.log(message.SendPicsInfo.Count)
+			this.body = '您點擊了菜單中： ' + message.EventKey
+		} // else if (message.Event === 'pic_sysphoto')
+		else if (message.Event === 'pic_photo_or_album') {  // 彈出拍照或相冊
+			// 推送事件的結構參：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
+			console.log(message.SendPicsInfo.PicList)
+			console.log(message.SendPicsInfo.Count)
+			this.body = '您點擊了菜單中： ' + message.EventKey
+		} // else if (message.Event === 'pic_photo_or_album')
+		else if (message.Event === 'pic_weixin') {  // 微信相冊發圖
+			// 推送事件的結構參：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
+			console.log(message.SendPicsInfo.PicList)
+			console.log(message.SendPicsInfo.Count)
+			this.body = '您點擊了菜單中： ' + message.EventKey
+		} // else if (message.Event === 'pic_photo_or_album')
+		else if (message.Event === 'location_select') {  // 地理位置選擇
+			// 推送事件的結構參：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
+			console.log(message.SendLocationInfo.Location_X)  // X坐标信息
+			console.log(message.SendLocationInfo.Location_Y)  // Y坐标信息
+			console.log(message.SendLocationInfo.Scale)  // 精度，可理解为精度或者比例尺、越精细的话 scale越高
+			console.log(message.SendLocationInfo.Label)  // 地理位置的字符串信息
+			console.log(message.SendLocationInfo.Poiname)  // 朋友圈POI的名字，可能为空
+			this.body = '您點擊了菜單中： ' + message.EventKey
 		} // if-else
 	} // if (messsage.MsgType == 'event')
 	else if (message.MsgType === 'text') {
