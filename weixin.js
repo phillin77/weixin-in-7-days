@@ -1,9 +1,9 @@
 /**
  * WeiXin 業務面處理邏輯 / Generator
  * start:  2017.08.08
- * update: 2017.08.09
+ * update: 2017.08.10
  * version:
- *     2017.08.09 [ADD]  1st Version
+ *     2017.08.10 [ADD]  1st Version
  */
 
 'use strict'
@@ -265,7 +265,19 @@ exports.reply = function *(next) {
 			console.log("tag list of me after batchUnTagging: ", tagList)			
 
 			reply = "12, 測試結果參 console.log"
+		}
+		else if (content === '13') {  // 測試 获取用户基本信息（包括UnionID机制）/ 批量获取用户基本信息
+			var user = yield wechatApi.fetchUsers(message.FromUserName, 'zh_CH')
+			console.log(user)
 
+			var openIds = [
+				{openid: message.FromUserName, lang: 'en'}
+			]
+			var users = yield wechatApi.fetchUsers(openIds)
+
+			console.log(users)
+
+			reply = JSON.stringify(users)
 		} // if-else
 
 		this.body = reply

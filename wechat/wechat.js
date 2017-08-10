@@ -85,7 +85,7 @@ const api = {
 		// 只开放给微信认证的服务号
 		remark: prefix + 'user/info/updateremark?',
 		// 获取用户基本信息（包括UnionID机制）(https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
-		fetch: prefix + 'user/info?'
+		fetch: prefix + 'user/info?',
 		// 批量获取用户基本信息 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
 		batchFetch: prefix + 'user/info/batchget?'
 	}
@@ -968,23 +968,20 @@ Wechat.prototype.fetchUsers = function(openIds, lang) {
 		that
 		  .fetchAccessToken()
 		  .then(function(data) {
-		  	var url
 		  	var options = {
 				json: true
 			}
 
 		  	if (_.isArray(openIds)) {  // 如果傳入 openIds 是 array，則呼叫 批量獲取
-		  		url = api.user.batchFetch + 'access_token=' + data.access_token	
-		  		options.url = url
-				options.form = {
+		  		options.url = api.user.batchFetch + 'access_token=' + data.access_token	
+				options.body = {
 					"user_list": openIds
 				}
 				options.method = 'POST'
 		  	}
 		  	else {  // 如果傳入 openIds 是 單一一個 openId，則呼叫 單一獲取
-		  		url = api.user.fetch + 'access_token=' + data.access_token
+		  		options.url = api.user.fetch + 'access_token=' + data.access_token
 		  				+ '&openid=' + openIds + '&lang=' + lang
-		  		options.url = url
 				options.method = 'GET'
 		  	}
 
