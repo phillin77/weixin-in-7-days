@@ -284,6 +284,34 @@ exports.reply = function *(next) {
 			console.log(userList)
 
 			reply = JSON.stringify(userList)
+		}
+		else if (content === '15') {  // 測試 群发訊息
+			var msgData
+			var tagId = '100'
+
+			// 將 User 加到 Tag 中
+			// var result1 = yield wechatApi.batchTagging(tagId, [message.FromUserName])
+			// console.log("result of batchTagging: ", result1)
+
+			// 圖文訊息
+			var mpnews = {
+				media_id: 'B1OCpyGJkrbFRueRrzH50Idl_Qzyoz_fQwZY1WK1xmQ',
+			}
+			msgData = yield wechatApi.sendByTag('mpnews', mpnews, tagId)
+
+			console.log('群發 圖文訊息 msgData', msgData)
+			reply = '群發 圖文訊息 送出'
+
+			// 文字訊息
+			var text = {
+				"content": 'Hello WeChat'
+			}
+			msgData = yield wechatApi.sendByTag('text', text, tagId)
+
+			console.log('群發 文字訊息 msgData', msgData)
+			reply = '群發 文字訊息 送出'
+
+
 		} // if-else
 
 		this.body = reply

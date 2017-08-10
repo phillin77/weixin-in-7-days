@@ -1062,7 +1062,9 @@ Wechat.prototype.listUsers = function(openId) {
 
 /**
  * 群发【订阅号与服务号认证后均可用】
- * @param  {[type]} openId  第一个拉取的OPENID，不填默认从头开始拉取
+ * @param  {[type]} type  群发的消息类型，图文消息为mpnews，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
+ * @param  {[type]} message  訊息內容
+ * @param  {[type]} tagId  群发到的标签的tag_id，参加用户管理中用户分组接口，若is_to_all值为true，可不填写tag_id
  * @return {[type]}          [description]
  *
  * reference: 
@@ -1072,7 +1074,7 @@ Wechat.prototype.sendByTag = function(type, message, tagId) {
 	var that = this
 	var msg = {
 		filter: {},
-		msgType: type
+		msgtype: type
 	}
 
 	msg[type] = message
