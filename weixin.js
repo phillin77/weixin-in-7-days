@@ -332,6 +332,13 @@ exports.reply = function *(next) {
 
 			console.log('預覽群發 文字訊息 msgData', msgData)
 			reply = '預覽群發 文字訊息 送出'
+		}
+		else if (content === '17') {  // 測試 查询群发消息发送状态【订阅号与服务号认证后均可用】
+			var msgId = '6452695785753042379'
+			var result = yield wechatApi.checkMass(msgId)
+
+			console.log('群發訊息結果: ', result)
+			reply = '17, 測試結果參 console.log'
 
 		} // if-else
 
