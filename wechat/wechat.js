@@ -25,6 +25,7 @@ var util = require('./wechat_util')
 
 // WeChat API 網址定義
 const prefix = 'https://api.weixin.qq.com/cgi-bin/'
+const mpPrefix = 'https://mp.weixin.qq.com/cgi-bin/'
 const api = {
 	// 获取access_token (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183)
 	accessToken: prefix + 'token?grant_type=client_credential',
@@ -114,6 +115,13 @@ const api = {
 		del: prefix + 'menu/delete?',
 		// 获取自定义菜单配置接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695)
 		current: prefix + 'get_current_selfmenu_info?',
+	},
+	// 帐号管理
+	qrcode: {
+		// 生成带参数的二维码 Ticket (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433542)
+		create: prefix + 'qrcode/create?',
+		// 通过ticket换取二维码 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433542)
+		show: mpPrefix + 'showqrcode?'
 	}
 } // api
 
@@ -1506,6 +1514,59 @@ Wechat.prototype.getCurrentMenu = function() {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // getCurrentMenu
+
+/**
+ * 生成带参数的二维码 (取得 ticket)
+ * @param  {[type]} qr (Note: 由參數 JSON 實際內容決定是臨時或是永久二維碼)
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433542
+ */
+Wechat.prototype.createQRCode = function(qr) {
+	var that = this
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.qrcode.create + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			request({method: 'POST', url: url, body: qr, json: true})
+			.then(function(response) { 
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Create QR Code fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // createQRCode
+
+/**
+ * 通过ticket换取二维码
+ * @param  {[type]} ticket
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433542
+ */
+Wechat.prototype.showQRCode = function(ticket) {
+	return api.qrcode.show + 'ticket=' + encodeURI(ticket)
+} // showQRCode
 
 Wechat.prototype.reply = function() {
 	var content = this.body
