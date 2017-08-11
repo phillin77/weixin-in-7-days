@@ -126,6 +126,11 @@ const api = {
 	// 长链接转短链接
 	shortUrl: {
 		create: apiPrefix + 'shorturl?'
+	},
+	// JS-SDK
+	jsticket: {
+		// 获取 JS-API ticket (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115)
+		get: apiPrefix + 'ticket/getticket?'
 	}
 } // api
 
@@ -161,7 +166,7 @@ Wechat.prototype.fetchAccessToken = function() {
 		}
 	}
 
-	this.getAccessToken()
+	return this.getAccessToken()
 	.then(function(data) {
 		try {
 			// 將字串轉成 JSON
@@ -200,6 +205,7 @@ Wechat.prototype.fetchAccessToken = function() {
 
 		// TODO ONLY for Debugging
 		console.log("XXX 5")
+
 		return Promise.resolve(data)
 	})
 
@@ -1620,6 +1626,92 @@ Wechat.prototype.createShortUrl = function(longUrl, action) {
 		}) // fetchAccessToken
 	}) // return new Promise
 } // createShortUrl
+
+/**
+ * 获获取 JS-API ticket
+ * (流程跟取得 access_token 類似)
+ * @param {{[type]}}  access_token
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+ */
+Wechat.prototype.fetchJSTicket = function(access_token) {
+	var that = this
+
+	return this.getTicket()
+	.then(function(data) {
+		try {
+			// 將字串轉成 JSON
+			data = JSON.parse(data)
+		}
+		catch(e) {
+			// 如果失敗，重新更新 ticket
+			return that.updateTicket()
+		}
+
+		// 檢查 ticket 是否有效與合法
+		if (that.isValidTicket(data)) {
+			return Promise.resolve(data)
+		}
+		else {
+			// 重新更新 ticket
+			return that.updateTicket()
+		}
+	})
+	.then(function(data) {
+		// Note: ticket 不須存在 wechat 的 Instance 中當成全域變數
+		
+		// 將 ticket 儲存到實體儲存媒體中
+		that.saveTicket(data)
+
+		return Promise.resolve(data)
+	})
+} // fetchJSTicket
+
+/** 
+ * 檢查 JS-API ticket 是否合法？有沒有過期？
+ */
+Wechat.prototype.isValidJSTicket = function(data) {
+	if (!data || !data.ticket || !data.expires_in) {
+		return false
+	}
+
+	var ticket = data.ticket
+	var expires_in = data.expires_in
+	var now = (new Date().getTime())
+
+	if (now < expires_in) {
+		return true
+	}
+	else {
+		return false
+	}
+} // isValidJSTicket
+
+/**
+ * 從 微信 Server 取得新的 JS-API ticket
+ * @param {{[type]}}  access_token
+ * 
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+ */
+Wechat.prototype.updateJSTicket = function(access_token) {
+	var url = api.jsticket.get + '&access_token=' + access_token + '&type=jsapi'
+
+	return new Promise(function(resolve, reject) {
+		request({url: url, json: true})
+		.then(function(response) {
+			var data = response[1]
+			var now = (new Date().getTime())
+			var expires_in = now + (data.expires_in - 20) * 1000  // 讓 ticket 提前 20 秒更新
+
+			data.expires_in = expires_in
+
+			resolve(data)
+		})
+	}) // return new Promise
+} // updateJSTicket
 
 Wechat.prototype.reply = function() {
 	var content = this.body
