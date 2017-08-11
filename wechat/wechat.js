@@ -1574,14 +1574,14 @@ Wechat.prototype.showQRCode = function(ticket) {
 
 /**
  * 长链接转短链接
- * @param  {[type]} url
+ * @param  {[type]} longUrl
  * @param  {[type]} action (optional, 預設值為：'long2short')
  * @return {[type]}          [description]
  *
  * reference: 
  *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433600
  */
-Wechat.prototype.createShortUrl = function(url, action) {
+Wechat.prototype.createShortUrl = function(longUrl, action) {
 	var that = this
 
 	// 設定參數的預設值
@@ -1598,7 +1598,7 @@ Wechat.prototype.createShortUrl = function(url, action) {
 
 			var form = {
 				"action": action,
-				"long_url": url
+				"long_url": longUrl
 			}
 			request({method: 'POST', url: url, body: form, json: true})
 			.then(function(response) { 

@@ -436,6 +436,13 @@ exports.reply = function *(next) {
 			var qrcodeUrl2 = wechatApi.showQRCode(qr2.ticket)
 			var qrcodeUrl3 = wechatApi.showQRCode(qr3.ticket)
 			reply = qrcodeUrl1 + '\r\n' + qrcodeUrl2 + '\r\n' + qrcodeUrl3
+		}
+		else if (content === '19') {  // 測試 帳號管理 (二維碼)
+			var longUrl = 'https://github.com'
+			var shortData = yield wechatApi.createShortUrl(longUrl)
+
+			console.log(shortData)
+			reply = shortData.short_url
 		} // if-else
 
 		this.body = reply
