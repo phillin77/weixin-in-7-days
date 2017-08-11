@@ -393,6 +393,49 @@ exports.reply = function *(next) {
 			console.log('群發訊息結果: ', result)
 			reply = '17, 測試結果參 console.log'
 
+		}
+		else if (content === '18') {  // 測試 帳號管理 (二維碼)
+			// 臨時二維碼
+			var tempQRCode = {
+				expire_seconds: 40000,
+				action_name: 'QR_SCENE',
+				action_info: {
+					scene: {
+						scene_id: 123
+					}
+				}
+			}
+			// 永久二維碼，傳入 场景值ID
+			var permQRCode = {
+				action_name: 'QR_LIMIT_SCENE',
+				action_info: {
+					scene: {
+						scene_id: 123
+					}
+				}
+			}
+			// 永久二維碼，傳入 场景值ID（字符串形式的ID）
+			var permStrQRCode = {
+				action_name: 'QR_LIMIT_STR_SCENE',
+				action_info: {
+					scene: {
+						scene_str: 'abc'
+					}
+				}
+			}
+
+			var qr1 = yield wechatApi.createQRCode(tempQRCode)
+			var qr2 = yield wechatApi.createQRCode(permQRCode)
+			var qr3 = yield wechatApi.createQRCode(permStrQRCode)
+
+			console.log('temp. QR Code ticket: ', qr1)
+			console.log('perm. QR Code ticket1: ', qr2)
+			console.log('perm. QR Code ticket2: ', qr3)
+
+			var qrcodeUrl1 = wechatApi.showQRCode(qr1.ticket)
+			var qrcodeUrl2 = wechatApi.showQRCode(qr2.ticket)
+			var qrcodeUrl3 = wechatApi.showQRCode(qr3.ticket)
+			reply = qrcodeUrl1 + '\r\n' + qrcodeUrl2 + '\r\n' + qrcodeUrl3
 		} // if-else
 
 		this.body = reply
