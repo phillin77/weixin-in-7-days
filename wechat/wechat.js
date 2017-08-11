@@ -24,104 +24,108 @@ var _ = require('lodash')
 var util = require('./wechat_util')
 
 // WeChat API 網址定義
-const prefix = 'https://api.weixin.qq.com/cgi-bin/'
+const apiPrefix = 'https://api.weixin.qq.com/cgi-bin/'
 const mpPrefix = 'https://mp.weixin.qq.com/cgi-bin/'
 const api = {
 	// 获取access_token (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183)
-	accessToken: prefix + 'token?grant_type=client_credential',
+	accessToken: apiPrefix + 'token?grant_type=client_credential',
 	temporary: {
 		// 臨時素材 (只保留3天) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-		upload: prefix + 'media/upload?',
+		upload: apiPrefix + 'media/upload?',
 		// 臨時素材 (只保留3天) 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-		fetch: prefix + 'media/get?'
+		fetch: apiPrefix + 'media/get?'
 	},
 	permanent: {
 		// 永久素材 (有數量與容量限制) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
-		upload: prefix + 'material/add_material?',
+		upload: apiPrefix + 'material/add_material?',
 		// 永久圖文素材 (有數量與容量限制) 上傳 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
-		uploadNews: prefix + 'material/add_news?',
+		uploadNews: apiPrefix + 'material/add_news?',
 		// 上传图文消息内的图片获取URL ()https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729)
-		uploadNewsPic: prefix + 'media/uploadimg?',
+		uploadNewsPic: apiPrefix + 'media/uploadimg?',
 		// 永久素材 獲取資源 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-		fetch: prefix + 'material/get_material?',
+		fetch: apiPrefix + 'material/get_material?',
 		// 刪除 永久素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738726)
-		del: prefix + 'material/del_material?',
+		del: apiPrefix + 'material/del_material?',
 		// 修改 永久图文素材 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738732)
-		updateNews: prefix + 'material/update_news?',
+		updateNews: apiPrefix + 'material/update_news?',
 		// 获取素材总数 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738733)
-		count: prefix + 'material/get_materialcount?',
+		count: apiPrefix + 'material/get_materialcount?',
 		// 获取素材列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738734)
-		batch: prefix + 'material/batchget_material?'
+		batch: apiPrefix + 'material/batchget_material?'
 	},
 	// 用户标签管理 (原本好像叫 group 用户分組管理，現在改成 tags)
 	tags: {
 		// 用户标签管理
 		// 创建标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		create: prefix + 'tags/create?',
+		create: apiPrefix + 'tags/create?',
 		// 获取公众号已创建的标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		fetch: prefix + 'tags/get?',
+		fetch: apiPrefix + 'tags/get?',
 		// 编辑标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		update: prefix + 'tags/update?',
+		update: apiPrefix + 'tags/update?',
 		// 删除标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		del: prefix + 'tags/delete?',
+		del: apiPrefix + 'tags/delete?',
 		// 获取标签下粉丝列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		getUser: prefix + 'user/tag/get?',
+		getUser: apiPrefix + 'user/tag/get?',
 
 		// 用户管理
 		// 批量为用户打标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		batchTagging: prefix + 'tags/members/batchtagging?',
+		batchTagging: apiPrefix + 'tags/members/batchtagging?',
 		// 批量为用户取消标签 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		batchUnTagging: prefix + 'tags/members/batchuntagging?',
+		batchUnTagging: apiPrefix + 'tags/members/batchuntagging?',
 		// 获取用户身上的标签列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837)
-		getIdList: prefix + 'tags/getidlist?'
+		getIdList: apiPrefix + 'tags/getidlist?'
 
 
 		// 舊版 API 的 Group 功能提供的
-		// check: prefix + 'group/getid?',
-		// move: prefix + 'group/members/update?',
-		// batchUpdate: prefix + 'group/members/batchupdate?',
+		// check: apiPrefix + 'group/getid?',
+		// move: apiPrefix + 'group/members/update?',
+		// batchUpdate: apiPrefix + 'group/members/batchupdate?',
 	},
 	user: {
 		// 设置用户备注名 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140838)
 		// 只开放给微信认证的服务号
-		remark: prefix + 'user/info/updateremark?',
+		remark: apiPrefix + 'user/info/updateremark?',
 		// 获取用户基本信息（包括UnionID机制）(https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
-		fetch: prefix + 'user/info?',
+		fetch: apiPrefix + 'user/info?',
 		// 批量获取用户基本信息 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839)
-		batchFetch: prefix + 'user/info/batchget?',
+		batchFetch: apiPrefix + 'user/info/batchget?',
 		// 获取用户列表 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840)
-		list: prefix + 'user/get?',
+		list: apiPrefix + 'user/get?',
 		// 删除群发【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		del: prefix + 'message/mass/delete?'
+		del: apiPrefix + 'message/mass/delete?'
 	},
 	// 群发消息
 	mass: {
 		// 根据标签进行群发【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		sendAllByTag: prefix + 'message/mass/sendall?',
+		sendAllByTag: apiPrefix + 'message/mass/sendall?',
 		// 根据OpenID列表群发【订阅号不可用，服务号认证后可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		sendAllByOpenIds: prefix + 'message/mass/send?',
+		sendAllByOpenIds: apiPrefix + 'message/mass/send?',
 		// 预览接口【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		preview: prefix + 'message/mass/preview?',
+		preview: apiPrefix + 'message/mass/preview?',
 		// 查询群发消息发送状态【订阅号与服务号认证后均可用】 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21)
-		check: prefix + 'message/mass/get?'
+		check: apiPrefix + 'message/mass/get?'
 	},
 	// 自定义菜单
 	menu: {
 		// 自定义菜单创建接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013)
-		create: prefix + 'menu/create?',
+		create: apiPrefix + 'menu/create?',
 		// 自定义菜单查询接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014)
-		get: prefix + 'menu/get?',
+		get: apiPrefix + 'menu/get?',
 		// 自定义菜单删除接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141015)
-		del: prefix + 'menu/delete?',
+		del: apiPrefix + 'menu/delete?',
 		// 获取自定义菜单配置接口 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695)
-		current: prefix + 'get_current_selfmenu_info?',
+		current: apiPrefix + 'get_current_selfmenu_info?',
 	},
 	// 帐号管理
 	qrcode: {
 		// 生成带参数的二维码 Ticket (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433542)
-		create: prefix + 'qrcode/create?',
+		create: apiPrefix + 'qrcode/create?',
 		// 通过ticket换取二维码 (https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433542)
 		show: mpPrefix + 'showqrcode?'
+	},
+	// 长链接转短链接
+	shortUrl: {
+		create: apiPrefix + 'shorturl?'
 	}
 } // api
 
@@ -1567,6 +1571,55 @@ Wechat.prototype.createQRCode = function(qr) {
 Wechat.prototype.showQRCode = function(ticket) {
 	return api.qrcode.show + 'ticket=' + encodeURI(ticket)
 } // showQRCode
+
+/**
+ * 长链接转短链接
+ * @param  {[type]} url
+ * @param  {[type]} action (optional, 預設值為：'long2short')
+ * @return {[type]}          [description]
+ *
+ * reference: 
+ *   https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433600
+ */
+Wechat.prototype.createShortUrl = function(url, action) {
+	var that = this
+
+	// 設定參數的預設值
+	action = action || 'long2short'
+
+	return new Promise(function(resolve, reject) {
+		that
+		  .fetchAccessToken()
+		  .then(function(data) {
+		  	var url = api.shortUrl.create + 'access_token=' + data.access_token
+
+			// TODO ONLY for Debugging
+			// console.log('url: ' + url)
+
+			var form = {
+				"action": action,
+				"long_url": url
+			}
+			request({method: 'POST', url: url, body: form, json: true})
+			.then(function(response) { 
+				var _data = response[1]
+
+				// TODO ONLY for Debugging
+				// console.log('_data: ', _data)
+				
+				if (_data) {
+					resolve(_data)
+				}
+				else {
+					throw new Error('Create Short URL fails')
+				}
+			})
+			.catch(function(err) {
+				reject(err)
+			})
+		}) // fetchAccessToken
+	}) // return new Promise
+} // createShortUrl
 
 Wechat.prototype.reply = function() {
 	var content = this.body
