@@ -9,14 +9,14 @@
 'use strict'
 
 var path = require('path')
-var config = require( path.join(__dirname, '../config.js') )
+var config = require( path.join(__dirname, '../config') )
 var Wechat = require( path.join(__dirname, '../wechat/wechat') )
 var wechatApi = new Wechat(config.wechat)
 
 
 // 創建 自定義菜單
 // Note: 不需每次啟動都創建 menu，只需創建一次，等下次需要更改時再重新執行即可
-// TODO
+// TODO 尚未驗證成功，測試時改用 Postman 直接呼叫 API 建立 menu
 // var menu = require('./menu')
 // wechatApi.deleteMenu()
 // .then(function() {
@@ -400,6 +400,8 @@ exports.reply = function *(next) {
 	else {
 		// TODO 尚未處理的 Incoming MsgType
 		console.log('尚未處理的 Incoming MsgType: ' + message.MsgType)
+
+		this.body = '尚未處理的 Incoming MsgType: ' + message.MsgType
 	} // if-else (messsage.msgType)
 
 	yield next

@@ -135,49 +135,65 @@ function Wechat(opts) {
 
 /**
  * 讀取 access_token
- * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
-Wechat.prototype.fetchAccessToken = function(data) {
+Wechat.prototype.fetchAccessToken = function() {
 	var that = this
 
 	// 如果目前已經有合法且有效的 access_token，則直接回傳目前的 access_token
 	if (this.access_token && this.expires_in) {
 		if (this.isValidAccessToken(this)) {
+			// TODO ONLY for Debugging
+			console.log("XXX 1")
 			return Promise.resolve(this)
 		}
 	}
 
 	this.getAccessToken()
-		.then(function(data) {
-			try {
-				// 將字串轉成 JSON
-				data = JSON.parse(data)
-			}
-			catch(e) {
-				// 如果失敗，重新更新 access_token
-				return that.updateAccessToken()
-			}
+	.then(function(data) {
+		try {
+			// 將字串轉成 JSON
+			data = JSON.parse(data)
 
-			// 檢查 access_token 是否有效與合法
-			if (that.isValidAccessToken(data)) {
-				return Promise.resolve(data)
-			}
-			else {
-				// 重新更新 access_token
-				return that.updateAccessToken()
-			}
-		})
-		.then(function(data) {
-			// 將 access_token 儲存到目前執行的 Global Instance 中
-			that.access_token = data.access_token
-			that.expires_in = data.expires_in
+			// TODO ONLY for Debugging
+			console.log("XXX data: ", data)
+		}
+		catch(e) {
+			// TODO ONLY for Debugging
+			console.log("XXX 2")
+			// 如果失敗，重新更新 access_token
+			return that.updateAccessToken()
+		}
 
-			// 將 access_token 儲存到實體儲存媒體中
-			that.saveAccessToken(data)
-
+		// 檢查 access_token 是否有效與合法
+		if (that.isValidAccessToken(data)) {
+			// TODO ONLY for Debugging
+			console.log("XXX 3")
 			return Promise.resolve(data)
-		})
+		}
+		else {
+			// TODO ONLY for Debugging
+			console.log("XXX 4")
+			// 重新更新 access_token
+			return that.updateAccessToken()
+		}
+	})
+	.then(function(data) {
+		// 將 access_token 儲存到目前執行的 Global Instance 中
+		that.access_token = data.access_token
+		that.expires_in = data.expires_in
+
+		// 將 access_token 儲存到實體儲存媒體中
+		that.saveAccessToken(data)
+
+		// TODO ONLY for Debugging
+		console.log("XXX 5")
+		return Promise.resolve(data)
+	})
+
+	// TODO ONLY for Debugging
+	console.log("XXX 6")
+
 } // fetchAccessToken
 
 /** 

@@ -11,7 +11,7 @@
 
 var Koa = require('koa')
 var wechat = require('./wechat/g')
-var config = require('./config.js')
+var config = require('./config')
 var reply = require('./weixin/reply')
 
 const server_port = process.env.WECHAT_PORT || 1234
