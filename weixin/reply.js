@@ -16,14 +16,13 @@ var wechatApi = new Wechat(config.wechat)
 
 // 創建 自定義菜單
 // Note: 不需每次啟動都創建 menu，只需創建一次，等下次需要更改時再重新執行即可
-// TODO 尚未驗證成功，測試時改用 Postman 直接呼叫 API 建立 menu
 // var menu = require('./menu')
 // wechatApi.deleteMenu()
 // .then(function() {
 // 	return wechatApi.createMenu(menu)
 // })
 // .then(function(msg) {
-// 	console.log(msg)
+// 	console.log('create menu: ', msg)
 // })
 
 /**

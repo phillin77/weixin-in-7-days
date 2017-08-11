@@ -6,6 +6,7 @@
 set_env.sh
 
 rt/wechat.txt
+rt/wechat_js_ticket.txt
 
 node_modules
 node_modules/*

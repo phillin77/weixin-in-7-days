@@ -145,6 +145,8 @@ function Wechat(opts) {
 	this.appSecret = opts.appSecret
 	this.getAccessToken = opts.getAccessToken
 	this.saveAccessToken = opts.saveAccessToken
+	this.getJSTicket = opts.getJSTicket
+	this.saveJSTicket = opts.saveJSTicket
 
 	// 讀取 access_token
 	this.fetchAccessToken()
@@ -160,8 +162,6 @@ Wechat.prototype.fetchAccessToken = function() {
 	// 如果目前已經有合法且有效的 access_token，則直接回傳目前的 access_token
 	if (this.access_token && this.expires_in) {
 		if (this.isValidAccessToken(this)) {
-			// TODO ONLY for Debugging
-			console.log("XXX 1")
 			return Promise.resolve(this)
 		}
 	}
@@ -171,26 +171,17 @@ Wechat.prototype.fetchAccessToken = function() {
 		try {
 			// 將字串轉成 JSON
 			data = JSON.parse(data)
-
-			// TODO ONLY for Debugging
-			console.log("XXX data: ", data)
 		}
 		catch(e) {
-			// TODO ONLY for Debugging
-			console.log("XXX 2")
 			// 如果失敗，重新更新 access_token
 			return that.updateAccessToken()
 		}
 
 		// 檢查 access_token 是否有效與合法
 		if (that.isValidAccessToken(data)) {
-			// TODO ONLY for Debugging
-			console.log("XXX 3")
 			return Promise.resolve(data)
 		}
 		else {
-			// TODO ONLY for Debugging
-			console.log("XXX 4")
 			// 重新更新 access_token
 			return that.updateAccessToken()
 		}
@@ -203,15 +194,8 @@ Wechat.prototype.fetchAccessToken = function() {
 		// 將 access_token 儲存到實體儲存媒體中
 		that.saveAccessToken(data)
 
-		// TODO ONLY for Debugging
-		console.log("XXX 5")
-
 		return Promise.resolve(data)
 	})
-
-	// TODO ONLY for Debugging
-	console.log("XXX 6")
-
 } // fetchAccessToken
 
 /** 
@@ -1639,7 +1623,7 @@ Wechat.prototype.createShortUrl = function(longUrl, action) {
 Wechat.prototype.fetchJSTicket = function(access_token) {
 	var that = this
 
-	return this.getTicket()
+	return this.getJSTicket()
 	.then(function(data) {
 		try {
 			// 將字串轉成 JSON
@@ -1647,23 +1631,23 @@ Wechat.prototype.fetchJSTicket = function(access_token) {
 		}
 		catch(e) {
 			// 如果失敗，重新更新 ticket
-			return that.updateTicket()
+			return that.updateJSTicket()
 		}
 
 		// 檢查 ticket 是否有效與合法
-		if (that.isValidTicket(data)) {
+		if (that.isValidJSTicket(data)) {
 			return Promise.resolve(data)
 		}
 		else {
 			// 重新更新 ticket
-			return that.updateTicket()
+			return that.updateJSTicket()
 		}
 	})
 	.then(function(data) {
 		// Note: ticket 不須存在 wechat 的 Instance 中當成全域變數
 		
 		// 將 ticket 儲存到實體儲存媒體中
-		that.saveTicket(data)
+		that.saveJSTicket(data)
 
 		return Promise.resolve(data)
 	})
