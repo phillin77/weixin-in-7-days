@@ -107,12 +107,16 @@ app.use(function *(next) {
 		var data = yield wechatApi.fetchAccessToken()
 		var access_token = data.access_token
 		var ticketData = yield wechatApi.fetchJSTicket(access_token)
-		var ticket = data.ticket
+		var ticket = ticketData.ticket
 		var url = this.href
 		var params = sign(ticket, url)
 
 		// 加上 appId 到要傳入 template 的參數中
 		params.appId = process.env.WECHAT_APP_ID
+
+		console.log("JS-SDK ticket: ", ticket)
+		console.log("JS-SDK url:", url)  // NOTE: 有時測試工具會在後面加上端口號 (如 8080)，如果有，要自行用字串取代移除端口號
+		console.log("JS-SDK params: ", params)
 
 		this.body = ejs.render(tpl, params)  // 將 params 作為數據傳入 template
 

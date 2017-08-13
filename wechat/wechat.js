@@ -1510,7 +1510,7 @@ Wechat.prototype.getCurrentMenu = function() {
 } // getCurrentMenu
 
 /**
- * 生成带参数的二维码 (取得 ticket)
+ * 生成带参数的二维码 (step 1: 取得 ticket)
  * @param  {[type]} qr (Note: 由參數 JSON 實際內容決定是臨時或是永久二維碼)
  * @return {[type]}          [description]
  *
@@ -1551,7 +1551,7 @@ Wechat.prototype.createQRCode = function(qr) {
 } // createQRCode
 
 /**
- * 通过ticket换取二维码
+ * 生成带参数的二维码 step 2: 通过ticket换取二维码
  * @param  {[type]} ticket
  * @return {[type]}          [description]
  *
@@ -1631,7 +1631,7 @@ Wechat.prototype.fetchJSTicket = function(access_token) {
 		}
 		catch(e) {
 			// 如果失敗，重新更新 ticket
-			return that.updateJSTicket()
+			return that.updateJSTicket(access_token)
 		}
 
 		// 檢查 ticket 是否有效與合法
@@ -1640,7 +1640,7 @@ Wechat.prototype.fetchJSTicket = function(access_token) {
 		}
 		else {
 			// 重新更新 ticket
-			return that.updateJSTicket()
+			return that.updateJSTicket(access_token)
 		}
 	})
 	.then(function(data) {
