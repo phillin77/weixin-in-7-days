@@ -30,17 +30,23 @@ var tpl = heredoc(function(){/*
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>猜電影</title>
+		<title>搜電影</title>
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1">
 	</head>
 	<body>
 		<h1>點擊標題，開始錄音翻譯</h1>
 		<p id="title"></p>
+		<div id="director"></div>
+		<div id="year"></div>
 		<div id="poster"></div>
 		<script scr="http://zeptojs.com/zepto-docs.min.js"></script>
 
 		<!-- 步骤二：引入JS文件 -->
-		<script scr="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+		<script type="text/javascript">
+		    define = null;
+		    require = null;
+		</script>
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js" type="text/javascript"></script>
 		<!-- 步骤三：通过config接口注入权限验证配置 -->
 		<script>
 			wx.config({
@@ -55,7 +61,24 @@ var tpl = heredoc(function(){/*
 					'onVoiceRecordEnd',
 					'translateVoice'					
 			    ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-			});		
+			});
+		</script>
+
+		<!-- 步骤四：通过ready接口处理成功验证 -->
+		<script>
+			wx.ready(function(){
+			    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+
+				<!-- 判断当前客户端版本是否支持指定JS接口 -->
+				wx.checkJsApi({
+				    jsApiList: ['onVoiceRecordEnd'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+				    success: function(res) {
+				    	console.log(res)
+				        // 以键值对的形式返回，可用的api值true，不可用为false
+				        // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+				    }
+				});
+			});
 		</script>
 	</body>
 </html>	
