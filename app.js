@@ -1,9 +1,9 @@
 /**
  * 主程式
  * start:  2017.08.07
- * update: 2017.08.11
+ * update: 2017.08.14
  * version:
- *     2017.08.11 [ADD]  1st Version
+ *     2017.08.14 [ADD]  1st Version
  *     
  */
 
@@ -19,8 +19,8 @@ const server_port = process.env.WECHAT_PORT || 1234
 var app = new Koa()
 
 //----------------------------------------------------
-// 測試 JS-SDK 的接口用的簡易版 route 實作
-// Note: 如果不使用 JS-SDK，則不須這個 middleware 的 usr
+// 測試 微信 JS-SDK 的接口用的簡易版 route 實作
+// Note: 如果不使用 JS-SDK，則不須這個 middleware 的 use
 
 var Wechat = require('./wechat/wechat')
 var crypto = require('crypto')
@@ -35,22 +35,29 @@ var tpl = heredoc(function(){/*
 	</head>
 	<body>
 		<h1>點擊標題，開始錄音翻譯</h1>
+		<button class="btn btn_primary" id="rec">開始錄音翻譯</button>
 		<p id="title"></p>
 		<div id="director"></div>
 		<div id="year"></div>
 		<div id="poster"></div>
-		<script scr="http://zeptojs.com/zepto-docs.min.js"></script>
 
-		<!-- 步骤二：引入JS文件 -->
+<!--
+		<script scr="//code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+		<script scr="//zeptojs.com/zepto-docs.min.js" type="text/javascript"></script>
+-->
+		<script scr="//zeptojs.com/zepto.min.js" type="text/javascript"></script>
+
+		<!-- 微信 JS-SDK 步骤二：引入JS文件 -->
 		<script type="text/javascript">
 		    define = null;
 		    require = null;
 		</script>
-		<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js" type="text/javascript"></script>
-		<!-- 步骤三：通过config接口注入权限验证配置 -->
+		<script src="//res.wx.qq.com/open/js/jweixin-1.2.0.js" type="text/javascript"></script>
+
+		<!-- 微信 JS-SDK 步骤三：通过config接口注入权限验证配置 -->
 		<script>
 			wx.config({
-			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 			    appId: '<%= appId %>', // 必填，公众号的唯一标识
 			    timestamp: <%= timestamp %>, // 必填，生成签名的时间戳
 			    nonceStr: '<%= noncestr %>', // 必填，生成签名的随机串
@@ -66,8 +73,9 @@ var tpl = heredoc(function(){/*
 
 		<!-- 步骤四：通过ready接口处理成功验证 -->
 		<script>
+
+			// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
 			wx.ready(function(){
-			    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
 
 				<!-- 判断当前客户端版本是否支持指定JS接口 -->
 				wx.checkJsApi({
@@ -78,6 +86,43 @@ var tpl = heredoc(function(){/*
 				        // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
 				    }
 				});
+
+				var isRecording = false
+
+				// TODO 使用 Zepto 有問題，會出現錯誤 $ is not defined
+				// $('h1').on('tap', function() {
+				// 點擊，開始錄音
+				document.querySelector('#rec').onclick = function () {
+					if (!isRecording) {
+						isRecording = true
+						wx.startRecord({
+							cancel: function() {
+								window.alert('那就無法使用語音搜尋電影的功能')
+							}
+						});
+						return
+					}
+
+					isRecording = false
+
+					// 停止录音接口
+					wx.stopRecord({
+					    success: function (res) {
+					    	// 成功錄音，取得本地端音頻的 Id (路徑)
+					        var localId = res.localId;
+
+					        // 识别音频并返回识别结果接口
+							wx.translateVoice({
+							   localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
+							    isShowProgressTips: 1, // 默认为1，显示进度提示
+							    success: function (res) {
+							    	window.alert(res.translateResult); // 语音识别的结果
+							    }
+							});
+					    }
+					});
+				}
+				// })  // $('h1').on('tap', function()
 			});
 		</script>
 	</body>
@@ -131,7 +176,7 @@ app.use(function *(next) {
 		var access_token = data.access_token
 		var ticketData = yield wechatApi.fetchJSTicket(access_token)
 		var ticket = ticketData.ticket
-		var url = this.href
+		var url = this.href  // 取得目前頁面的 URL
 		var params = sign(ticket, url)
 
 		// 加上 appId 到要傳入 template 的參數中
@@ -149,7 +194,7 @@ app.use(function *(next) {
 	yield next
 })
 
-// end of 測試 JS-SDK 的接口用的簡易版 route 實作
+// end of 測試 微信 JS-SDK 的接口用的簡易版 route 實作
 //----------------------------------------------------
 
 // 引入 微信 實作的中間件 (middleware)
