@@ -108,6 +108,8 @@ var tpl = heredoc(function(){/*
 
 					if (!isRecording) {
 						isRecording = true
+						$('#rec').text('結束錄音')
+
 						wx.startRecord({
 							cancel: function() {
 								window.alert('那就無法使用語音搜尋電影的功能')
@@ -117,6 +119,7 @@ var tpl = heredoc(function(){/*
 					}
 
 					isRecording = false
+					$('#rec').text('點擊，開始錄音翻譯')
 
 					// 停止录音接口
 					wx.stopRecord({
@@ -134,7 +137,7 @@ var tpl = heredoc(function(){/*
 							});
 					    }
 					});
-				})  // $('h1').on('tap', function()
+				})  // $('#rec').on('click', function()
 			});
 		</script>
 	</body>
