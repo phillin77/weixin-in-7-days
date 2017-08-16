@@ -1,9 +1,9 @@
 /**
  * 主程式
  * start:  2017.08.07
- * update: 2017.08.14
+ * update: 2017.08.17
  * version:
- *     2017.08.14 [ADD]  1st Version
+ *     2017.08.17 [ADD]  1st Version
  *     
  */
 
@@ -22,6 +22,7 @@ var app = new Koa()
 // 測試 微信 JS-SDK 的接口用的簡易版 route 實作
 // Note: 如果不使用 JS-SDK，則不須這個 middleware 的 use
 
+const static_serve = require('koa-static')  // for 靜態檔案
 var Wechat = require('./wechat/wechat')
 var crypto = require('crypto')
 var ejs = require('ejs')
@@ -30,12 +31,14 @@ var tpl = heredoc(function(){/*
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
 		<title>搜電影</title>
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1">
+		<link rel="stylesheet" href="css/style.css">
 	</head>
-	<body>
-		<h1>點擊標題，開始錄音翻譯</h1>
-		<button class="btn btn_primary" id="rec">開始錄音翻譯</button>
+	<body ontouchstart="">
+		<button class="btn btn_primary" id="rec">點擊，開始錄音翻譯</button>
 		<p id="title"></p>
 		<div id="director"></div>
 		<div id="year"></div>
@@ -44,13 +47,23 @@ var tpl = heredoc(function(){/*
 <!--
 		<script scr="//code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
 		<script scr="//zeptojs.com/zepto-docs.min.js" type="text/javascript"></script>
+		<script scr="/js/zepto.min.js" type="text/javascript"></script>		
+
+		<script type="text/javascript" scr="js/jquery-1.12.4.min.js"></script>
 -->
-		<script scr="//zeptojs.com/zepto.min.js" type="text/javascript"></script>
+
+		<!-- 如用 CDN 的方式，會找不到 $ -->
+<!--
+		<script scr="http://zeptojs.com/zepto.min.js"></script>
+-->
+
+		<!--网上下载zepto.min.js-->
+		<script src="/js/zepto.min.js"> </script>
 
 		<!-- 微信 JS-SDK 步骤二：引入JS文件 -->
 		<script type="text/javascript">
-		    define = null;
-		    require = null;
+		    // define = null;
+		    // require = null;
 		</script>
 		<script src="//res.wx.qq.com/open/js/jweixin-1.2.0.js" type="text/javascript"></script>
 
@@ -89,10 +102,10 @@ var tpl = heredoc(function(){/*
 
 				var isRecording = false
 
-				// TODO 使用 Zepto 有問題，會出現錯誤 $ is not defined
-				// $('h1').on('tap', function() {
 				// 點擊，開始錄音
-				document.querySelector('#rec').onclick = function () {
+				$('#rec').on('click', function() {
+					console.log("Tap")
+
 					if (!isRecording) {
 						isRecording = true
 						wx.startRecord({
@@ -121,8 +134,7 @@ var tpl = heredoc(function(){/*
 							});
 					    }
 					});
-				}
-				// })  // $('h1').on('tap', function()
+				})  // $('h1').on('tap', function()
 			});
 		</script>
 	</body>
@@ -168,6 +180,10 @@ function sign(ticket, url) {
 	}
 } // sign()
 
+// static path (/js, /css, /image)
+app.use(static_serve(__dirname + '/static'))
+
+// route
 app.use(function *(next) {
 	// 如果網址中有特殊字串，如 (/movie)
 	if (this.url.indexOf('/movie') > -1) {
