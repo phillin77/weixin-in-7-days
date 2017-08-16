@@ -132,7 +132,27 @@ var tpl = heredoc(function(){/*
 							   localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
 							    isShowProgressTips: 1, // 默认为1，显示进度提示
 							    success: function (res) {
-							    	window.alert(res.translateResult); // 语音识别的结果
+							    	var result = res.translateResult  // 语音识别的结果
+
+							    	// 使用 豆瓣 API V2 :: 电影条目搜索
+							    	// https://developers.douban.com/wiki/?title=movie_v2
+									
+									$.ajax({
+										type: 'get',
+										url: 'https://api.douban.com/v2/movie/search?q=' + result,
+										dataType: 'jsonp',
+										jsonp: 'callback',
+										success: function(data) {
+											// console.log(data)
+											var subject = data.subjects[0]
+											// console.log(subject)
+
+											$('#title').html(subject.title)
+											$('#year').html(subject.year)
+											$('#director').html(subject.directors[0].name)
+											$('#poster').html('<img src="' + subject.images.large + '" />')
+										}
+									}) // $.ajax()
 							    }
 							});
 					    }
