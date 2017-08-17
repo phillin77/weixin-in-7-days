@@ -79,7 +79,13 @@ var tpl = heredoc(function(){/*
 					'startRecord',
 					'stopRecord',
 					'onVoiceRecordEnd',
-					'translateVoice'					
+					'translateVoice',
+
+					'onMenuShareTimeline',
+					'onMenuShareAppMessage',
+					'onMenuShareQQ',
+					'onMenuShareWeibo',
+					'onMenuShareQZone'
 			    ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 			});
 		</script>
@@ -90,7 +96,7 @@ var tpl = heredoc(function(){/*
 			// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
 			wx.ready(function(){
 
-				<!-- 判断当前客户端版本是否支持指定JS接口 -->
+				// 判断当前客户端版本是否支持指定JS接口
 				wx.checkJsApi({
 				    jsApiList: ['onVoiceRecordEnd'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
 				    success: function(res) {
@@ -100,6 +106,32 @@ var tpl = heredoc(function(){/*
 				    }
 				});
 
+				//--------------------------------------------------------
+				// 分享给朋友
+
+				// 預設內容
+				var shareContent = {
+				    title: '', // 分享标题
+				    desc: '', // 分享描述
+				    link: '', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+				    imgUrl: '', // 分享图标
+				    //type: '', // 分享类型,music、video或link，不填默认为link
+				    //dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+				    success: function () { 
+				        // 用户确认分享后执行的回调函数
+				        window.alert('分享成功')
+				    },
+				    cancel: function () { 
+				        // 用户取消分享后执行的回调函数
+				        window.alert('分享失敗')
+				    }
+				}
+				
+				// 啟動就設定好分享的內容
+				wx.onMenuShareAppMessage(shareContent);
+
+				//--------------------------------------------------------
+				// 錄音、STT (识别音频 translateVoice)
 				var isRecording = false
 
 				// 點擊，開始錄音
@@ -151,6 +183,26 @@ var tpl = heredoc(function(){/*
 											$('#year').html(subject.year)
 											$('#director').html(subject.directors[0].name)
 											$('#poster').html('<img src="' + subject.images.large + '" />')
+
+											// 設定 分享给朋友 的內容
+											var shareContent = {
+											    title: subject.title, // 分享标题
+											    desc: 'j我搜出來了 ' + subject.title, // 分享描述
+											    link: 'https://github.com', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+											    imgUrl: subject.images.large , // 分享图标
+											    //type: '', // 分享类型,music、video或link，不填默认为link
+											    //dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+											    success: function () { 
+											        // 用户确认分享后执行的回调函数
+											        window.alert('分享成功')
+											    },
+											    cancel: function () { 
+											        // 用户取消分享后执行的回调函数
+											        window.alert('分享失敗')
+											    }
+											}
+
+											wx.onMenuShareAppMessage(shareContent);
 										}
 									}) // $.ajax()
 							    }
