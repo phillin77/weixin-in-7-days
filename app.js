@@ -43,6 +43,7 @@ var tpl = heredoc(function(){/*
 		<div id="director"></div>
 		<div id="year"></div>
 		<div id="poster"></div>
+		<div id="poster_note" hidden>(點擊圖片，左右移動可預覽)</div>
 
 <!--
 		<script scr="//code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
@@ -85,7 +86,9 @@ var tpl = heredoc(function(){/*
 					'onMenuShareAppMessage',
 					'onMenuShareQQ',
 					'onMenuShareWeibo',
-					'onMenuShareQZone'
+					'onMenuShareQZone',
+
+					'previewImage'
 			    ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 			});
 		</script>
@@ -129,6 +132,14 @@ var tpl = heredoc(function(){/*
 				
 				// 啟動就設定好分享的內容
 				wx.onMenuShareAppMessage(shareContent);
+
+				//--------------------------------------------------------
+				// 预览图片接口
+				var slides = {}
+				$('#poster').on('click', function() {
+					// Note: slides 內容會在搜尋結果成功回傳後更新
+					wx.previewImage(slides);
+				}) // $('#poster').on('click', function()
 
 				//--------------------------------------------------------
 				// 錄音、STT (识别音频 translateVoice)
@@ -203,7 +214,18 @@ var tpl = heredoc(function(){/*
 											}
 
 											wx.onMenuShareAppMessage(shareContent);
-										}
+
+											// 設定 预览图片接口 的傳入參數
+											slides = {
+												current: subject.images.large,
+												urls: []
+											}
+											data.subjects.forEach(function(item) {
+												slides.urls.push(item.images.large)
+											})
+
+											$('#poster_note').show();									
+										} // success
 									}) // $.ajax()
 							    }
 							});
