@@ -1,9 +1,10 @@
 /**
  * Generator
  * start:  2017.08.08
- * update: 2017.08.08
+ * update: 2017.08.20
  * version:
- *     2017.08.08 [ADD]  1st Version
+ *     2017.08.08 [ADD]  1st Version (for koa v1)
+ *     2017.08.20 [EDIT] for koa v2
  */
 
 'use strict'
@@ -18,11 +19,15 @@ module.exports = function(opts, handler) {
 	// 建立全域使用的 WeChat Instance
 	var wechat = new Wechat(opts)
 
-	return function *(next) {
+	// TODO koa v1 to koa v2
+	// return function *(next) {  // for koa 1
+	return async function (ctx, next) {  // for koa 2
 		var that = this
 
-		// TODO ONLY for Debugging
+		// ONLY for Debugging
 		// console.log(this.query)
+		// console.log('ctx: ', ctx)
+		// console.log('this.method: ', this.method)
 
 		var token = opts.token
 		var signature = this.query.signature
@@ -36,28 +41,40 @@ module.exports = function(opts, handler) {
 			// 驗證訊息是否來自微信服務器
 			// reference: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421135319
 			if (sha === signature) {
-				this.body = echostr + ''
+				// TODO koa v1 to koa v2
+				// this.body = echostr + ''  // for koa 1: use this
+				ctx.body = echostr + ''  // for koa 2: use ctx
+				// console.log('echostr:', echostr)
 			}
 			else {
-				this.body = 'wrong'
+				// TODO koa v1 to koa v2
+				// this.body = 'wrong'  // for koa 1: use this
+				ctx.body = 'wrong'  // for koa 2: use ctx
+				// console.log('signature wrong')
 			}
 		} // if (this.method === 'GET')
 		else if (this.method === 'POST') {
 			// 驗證訊息是否來自微信服務器，如果不是，回傳 'wrong'
 			if (sha !== signature) {
-				this.body = 'wrong'
+				// TODO koa v1 to koa v2
+				// this.body = 'wrong'  // for koa 1: use this
+				ctx.body = 'wrong'  // for koa 2: use ctx
 
 				return false
 			}
 
+			// TODO koa v1 to koa v2
 			// 取得 POST 過來的原始的 xml 內容
-			var data = yield getRawBody(this.req, {
+			// var data = yield getRawBody(this.req, {  // for koa 1: use yield
+			var data = await getRawBody(this.req, {  // for koa 2: use await
 				length: this.length,
 				limit: '1mb',
 				encoding: this.chatset
 			})
 
-			var content = yield util.parseXmlAsync(data)
+			// TODO koa v1 to koa v2
+			// var content = yield util.parseXmlAsync(data)
+			var content = await util.parseXmlAsync(data)
 
 			// TODO ONLY for Debugging
 			// console.log('content: ', content)
@@ -69,9 +86,11 @@ module.exports = function(opts, handler) {
 			this.weixin = message
 
 			// 將處理交給外部業務面的 handler 處理
-			yield handler.call(this, next)
+			// TODO koa v1 to koa v2
+			// yield handler.call(this, next)
+			await handler.call(this, ctx)
 
-			wechat.reply.call(this)			
+			wechat.reply.call(this, ctx)			
 
 		} // if (this.method === 'POST')
 	} // return function* (next)

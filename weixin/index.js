@@ -1,22 +1,23 @@
 /**
- * WeiXin Config
- * start:  2017.08.08
- * update: 2017.08.11
+ * WeiXin Config, 建立 wechatApi instance
+ * start:  2017.08.18
+ * update: 2017.08.18
  * version:
- *     2017.08.11 [ADD]  1st Version
+ *     2017.08.18 [ADD]  1st Version
  */
 
 'use strict'
 
 var path = require('path')
-var util = require('./libs/util')
+var util = require('../libs/util')
 var fs = require('fs')
+var Wechat = require('../wechat/wechat')
 
 // 儲存 access_token 的檔案
-const WECHAT_FILE = path.join(__dirname, './rt/wechat.txt')
+const WECHAT_FILE = path.join(__dirname, '../rt/wechat.txt')
 
 // 儲存 JS-API ticket 的檔案
-const WECHAT_JS_TICKET_FILE = path.join(__dirname, './rt/wechat_js_ticket.txt')
+const WECHAT_JS_TICKET_FILE = path.join(__dirname, '../rt/wechat_js_ticket.txt')
 
 // WeChat 開發帳號設定值，與公用函式
 const config = {
@@ -27,7 +28,7 @@ const config = {
 
 		// 將 access_token 從實體媒體中讀出
 		getAccessToken: function() {
-			var dir = path.join(__dirname, './rt')
+			var dir = path.join(__dirname, '../rt')
 			if (!fs.existsSync(dir)){ 
 				fs.mkdirSync(dir); 
 			}
@@ -45,7 +46,7 @@ const config = {
 		},
 		// 將 access_token 存回實體媒體
 		saveAccessToken: function(data) {
-			var dir = path.join(__dirname, './rt')
+			var dir = path.join(__dirname, '../rt')
 			if (!fs.existsSync(dir)){ 
 				fs.mkdirSync(dir); 
 			}
@@ -56,7 +57,7 @@ const config = {
 
 		// 將 JS-API ticket 從實體媒體中讀出
 		getJSTicket: function() {
-			var dir = path.join(__dirname, './rt')
+			var dir = path.join(__dirname, '../rt')
 			if (!fs.existsSync(dir)){ 
 				fs.mkdirSync(dir); 
 			}
@@ -74,7 +75,7 @@ const config = {
 		},
 		// 將 JS-API ticket 存回實體媒體
 		saveJSTicket: function(data) {
-			var dir = path.join(__dirname, './rt')
+			var dir = path.join(__dirname, '../rt')
 			if (!fs.existsSync(dir)){ 
 				fs.mkdirSync(dir); 
 			}
@@ -85,4 +86,9 @@ const config = {
 	}
 } // config
 
-module.exports = config
+exports.getWechatOptions = config
+
+exports.getWechat = function() {
+	var wechatApi = new Wechat(config.wechat)
+	return wechatApi
+} // getWechat
