@@ -119,8 +119,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 		}
 		else if (content === '5') {  // 測試 上傳的臨時素材 (圖片)，回覆 圖片消息
 			// 必須先上傳 臨時素材 (圖片)，取得 mdeia_id
-			// TODO koa v1 to koa v2
-			// var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'))
 			var data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'))
 
 			reply = {
@@ -130,8 +128,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 		}
 		else if (content === '6') {  // 測試 上傳的臨時素材 (視頻)，回覆 視頻消息
 			// 必須先上傳 臨時素材 (視頻)，取得 mdeia_id
-			// TODO koa v1 to koa v2
-			// var data = yield wechatApi.uploadMaterial('video', path.join(__dirname, '../media/charmy.mp4'))
 			var data = await wechatApi.uploadMaterial('video', path.join(__dirname, '../media/charmy.mp4'))
 
 			reply = {
@@ -143,8 +139,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 		}
 		else if (content === '7') {  // 測試 上傳的臨時素材 (音樂, 封面圖)，回覆 音樂消息
 			// 必須先上傳 臨時素材 (封面圖)，取得 mdeia_id
-			// TODO koa v1 to koa v2
-			// var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'))
 			var data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'))
 
 			reply = {
@@ -159,8 +153,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 		else if (content === '8') {  // 測試 上傳的永久素材 (圖片)，回覆 圖片消息
 			// 必須先上傳 永久素材 (圖片)，取得 mdeia_id
 			var permanent = {type: 'image'}
-			// TODO koa v1 to koa v2
-			// var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'), permanent)
 			var data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'), permanent)
 
 			reply = {
@@ -174,8 +166,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 				type: 'video',
 				description: '{ "title": "charmy", "introduction": "永久素材視頻 charmy"}'
 			}
-			// TODO koa v1 to koa v2
-			// var data = yield wechatApi.uploadMaterial('video', path.join(__dirname, '../media/charmy.mp4'))
 			var data = await wechatApi.uploadMaterial('video', path.join(__dirname, '../media/charmy.mp4'))
 
 			reply = {
@@ -188,11 +178,9 @@ exports.reply = async function (ctx, next) {  // koa v2
 		else if (content === '10') {  // 測試 上傳的永久素材 (圖片)，再上傳圖文消息，回覆 圖文消息
 			// 必須先上傳 永久素材 (圖片)，取得 mdeia_id
 			var permanent = {}
-			// TODO koa v1 to koa v2
-			// var picData = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'), permanent)
 			var picData = await wechatApi.uploadMaterial('image', path.join(__dirname, '../media/wechat.png'), permanent)
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('picData: ', picData)
 
 			var media = {
@@ -216,13 +204,10 @@ exports.reply = async function (ctx, next) {  // koa v2
 			}
 
 			permanent = {}
-			// TODO koa v1 to koa v2
-			// var data = yield wechatApi.uploadMaterial('news', media, permanent)
-			// data = yield wechatApi.fetchMaterial(data.media_id, 'news', permanent)
 			var data = await wechatApi.uploadMaterial('news', media, permanent)
 			data = await wechatApi.fetchMaterial(data.media_id, 'news', permanent)
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('data: ', data)
 
 			var items = data.news_item
@@ -239,12 +224,10 @@ exports.reply = async function (ctx, next) {  // koa v2
 
 			reply = news
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('reply: ', reply)
 		}
 		else if (content === '11') {  // 測試 上傳的永久素材 (圖片)，再上傳圖文消息，回覆 圖文消息
-			// TODO koa v1 to koa v2
-			// var counts = yield wechatApi.countMaterial()
 			var counts = await wechatApi.countMaterial()
 
 			console.log("counts: ", JSON.stringify(counts))
@@ -270,9 +253,7 @@ exports.reply = async function (ctx, next) {  // koa v2
 			// 	count: 10
 			// })
 
-			// 改用 yeild 的語法完成上面 4 個 listX 讀取
-			// TODO koa v1 to koa v2
-			// var results = yield [
+			// 改用 await 的語法完成上面 4 個 listX 讀取
 			var results = await [
 				wechatApi.batchMaterial({
 					type: 'image',
@@ -303,56 +284,38 @@ exports.reply = async function (ctx, next) {  // koa v2
 		}
 		else if (content === '12') {  // 測試 用户标签管理
 			var name = 'wechat'
-			// TODO koa v1 to koa v2
-			// var tag = yield wechatApi.createTag(name)
 			var tag = await wechatApi.createTag(name)
 			console.log("create tag [", name, ']: ', tag)
 
-			// TODO koa v1 to koa v2
-			// var tags = yield wechatApi.fetchTags()
 			var tags = await wechatApi.fetchTags()
 			console.log("tags: ", tags)
 
-			// TODO koa v1 to koa v2
-			// var tagList = yield wechatApi.getTagListOfUserId(message.FromUserName)
 			var tagList = await wechatApi.getTagListOfUserId(message.FromUserName)
 			console.log("tag list of me: ", tagList)			
 				
 			var tagId = 100	
 
-			// TODO koa v1 to koa v2
-			// var result1 = yield wechatApi.batchTagging(tagId, [message.FromUserName])
 			var result1 = await wechatApi.batchTagging(tagId, [message.FromUserName])
 			console.log("result of batchTagging: ", result1)
 
-			// TODO koa v1 to koa v2
-			// tagList = yield wechatApi.getTagListOfUserId(message.FromUserName)
 			tagList = await wechatApi.getTagListOfUserId(message.FromUserName)
 			console.log("tag list of me after batchTagging: ", tagList)			
 
-			// TODO koa v1 to koa v2
-			// var result2 = yield wechatApi.batchUnTagging(tagId, [message.FromUserName])
 			var result2 = await wechatApi.batchUnTagging(tagId, [message.FromUserName])
 			console.log("result of batchUpTagging: ", result2)
 
-			// TODO koa v1 to koa v2
-			// tagList = yield wechatApi.getTagListOfUserId(message.FromUserName)
 			tagList = await wechatApi.getTagListOfUserId(message.FromUserName)
 			console.log("tag list of me after batchUnTagging: ", tagList)			
 
 			reply = "12, 測試結果參 console.log"
 		}
 		else if (content === '13') {  // 測試 获取用户基本信息（包括UnionID机制）/ 批量获取用户基本信息
-			// TODO koa v1 to koa v2
-			// var user = yield wechatApi.fetchUsers(message.FromUserName, 'zh_CH')
 			var user = await wechatApi.fetchUsers(message.FromUserName, 'zh_CH')
 			console.log(user)
 
 			var openIds = [
 				{openid: message.FromUserName, lang: 'en'}
 			]
-			// TODO koa v1 to koa v2
-			// var users = yield wechatApi.fetchUsers(openIds)
 			var users = await wechatApi.fetchUsers(openIds)
 
 			console.log(users)
@@ -360,8 +323,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 			reply = JSON.stringify(users)
 		}
 		else if (content === '14') {  // 測試 获取用户列表
-			// TODO koa v1 to koa v2
-			// var userList = yield wechatApi.listUsers()
 			var userList = await wechatApi.listUsers()
 			console.log(userList)
 
@@ -379,8 +340,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 			var mpnews = {
 				media_id: 'B1OCpyGJkrbFRueRrzH50Idl_Qzyoz_fQwZY1WK1xmQ',
 			}
-			// TODO koa v1 to koa v2
-			// msgData = yield wechatApi.sendByTag('mpnews', mpnews, tagId)
 			msgData = await wechatApi.sendByTag('mpnews', mpnews, tagId)
 
 			console.log('群發 圖文訊息 msgData', msgData)
@@ -390,8 +349,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 			var text = {
 				"content": 'Hello WeChat'
 			}
-			// TODO koa v1 to koa v2
-			// msgData = yield wechatApi.sendByTag('text', text, tagId)
 			msgData = await wechatApi.sendByTag('text', text, tagId)
 
 			console.log('群發 文字訊息 msgData', msgData)
@@ -405,7 +362,7 @@ exports.reply = async function (ctx, next) {  // koa v2
 			// var mpnews = {
 			// 	media_id: 'B1OCpyGJkrbFRueRrzH50Idl_Qzyoz_fQwZY1WK1xmQ',
 			// }
-			// msgData = yield wechatApi.previewMass('mpnews', mpnews, openId)
+			// msgData = await wechatApi.previewMass('mpnews', mpnews, openId)
 
 			// console.log('預覽群發 圖文訊息 msgData', msgData)
 			// reply = '預覽群發 圖文訊息 送出'
@@ -414,8 +371,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 			var text = {
 				"content": 'Hello WeChat'
 			}
-			// TODO koa v1 to koa v2
-			// msgData = yield wechatApi.previewMass('text', text, openId)
 			msgData = await wechatApi.previewMass('text', text, openId)
 
 			console.log('預覽群發 文字訊息 msgData', msgData)
@@ -423,8 +378,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 		}
 		else if (content === '17') {  // 測試 查询群发消息发送状态【订阅号与服务号认证后均可用】
 			var msgId = '6452695785753042379'
-			// TODO koa v1 to koa v2
-			// var result = yield wechatApi.checkMass(msgId)
 			var result = await wechatApi.checkMass(msgId)
 
 			console.log('群發訊息結果: ', result)
@@ -461,10 +414,6 @@ exports.reply = async function (ctx, next) {  // koa v2
 				}
 			}
 
-			// TODO koa v1 to koa v2
-			// var qr1 = yield wechatApi.createQRCode(tempQRCode)
-			// var qr2 = yield wechatApi.createQRCode(permQRCode)
-			// var qr3 = yield wechatApi.createQRCode(permStrQRCode)
 			var qr1 = await wechatApi.createQRCode(tempQRCode)
 			var qr2 = await wechatApi.createQRCode(permQRCode)
 			var qr3 = await wechatApi.createQRCode(permStrQRCode)
@@ -480,29 +429,19 @@ exports.reply = async function (ctx, next) {  // koa v2
 		}
 		else if (content === '19') {  // 測試 帳號管理 (二維碼)
 			var longUrl = 'https://github.com'
-			// TODO koa v1 to koa v2
-			// var shortData = yield wechatApi.createShortUrl(longUrl)
 			var shortData = await wechatApi.createShortUrl(longUrl)
 
 			console.log(shortData)
 			reply = shortData.short_url
 		} // if-else
 
-		// TODO koa v1 to koa v2
-		// this.body = reply
 		ctx.body = reply
 	} // else if (message.MsgType === 'text')
 	else {
 		// TODO 尚未處理的 Incoming MsgType
 		console.log('尚未處理的 Incoming MsgType: ' + message.MsgType)
 
-		// TODO koa v1 to koa v2
-		// this.body = '尚未處理的 Incoming MsgType: ' + message.MsgType
 		ctx.body = '尚未處理的 Incoming MsgType: ' + message.MsgType
 
 	} // if-else (messsage.msgType)
-
-	// TODO koa v1 to koa v2
-	// yield next
-	// await next()
 } // reply

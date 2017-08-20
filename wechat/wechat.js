@@ -301,14 +301,14 @@ Wechat.prototype.uploadMaterial = function(type, material, permanent) {
 				options.formData = form
 			}
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request(options)
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -351,7 +351,7 @@ Wechat.prototype.fetchMaterial = function(mediaId, type, permanent) {
 		  .then(function(data) {
 		  	var url = fetchdUrl + 'access_token=' + data.access_token + '&media_id=' + mediaId
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			var form = {}
@@ -380,7 +380,7 @@ Wechat.prototype.fetchMaterial = function(mediaId, type, permanent) {
 				.then(function(response) {
 					var _data = response[1]
 
-					// TODO ONLY for Debugging
+					// ONLY for Debugging
 					// console.log('_data: ', _data)
 					
 					if (_data) {
@@ -420,14 +420,14 @@ Wechat.prototype.deleteMaterial = function(mediaId) {
 		  .then(function(data) {
 		  	var url = api.permanent.del + 'access_token=' + data.access_token + '&media_id=' + mediaId
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'POST', url: url, body: form, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -467,14 +467,14 @@ Wechat.prototype.updateMaterial = function(mediaId, news) {
 		  .then(function(data) {
 		  	var url = api.permanent.updateNews + 'access_token=' + data.access_token + '&media_id=' + mediaId
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'POST', url: url, body: form, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -507,14 +507,14 @@ Wechat.prototype.countMaterial = function() {
 		  .then(function(data) {
 		  	var url = api.permanent.count + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'GET', url: url, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -552,14 +552,14 @@ Wechat.prototype.batchMaterial = function(options) {
 		  .then(function(data) {
 		  	var url = api.permanent.batch + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'POST', url: url, body: options, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -593,7 +593,7 @@ Wechat.prototype.createTag = function(name) {
 		  .then(function(data) {
 		  	var url = api.tags.create + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			var form = {
@@ -606,7 +606,7 @@ Wechat.prototype.createTag = function(name) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -639,14 +639,14 @@ Wechat.prototype.fetchTags = function() {
 		  .then(function(data) {
 		  	var url = api.tags.fetch + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			request({method: 'GET', url: url, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -681,7 +681,7 @@ Wechat.prototype.updateTag = function(tagId, name) {
 		  .then(function(data) {
 		  	var url = api.tags.update + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			var form = {
@@ -695,7 +695,7 @@ Wechat.prototype.updateTag = function(tagId, name) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -729,7 +729,7 @@ Wechat.prototype.deleteTag = function(tagId) {
 		  .then(function(data) {
 		  	var url = api.tags.del + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			var form = {
@@ -742,7 +742,7 @@ Wechat.prototype.deleteTag = function(tagId) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -777,7 +777,7 @@ Wechat.prototype.getTagUsers = function(tagId, next_openid) {
 		  .then(function(data) {
 		  	var url = api.tags.getUser + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			var formData = {
@@ -789,7 +789,7 @@ Wechat.prototype.getTagUsers = function(tagId, next_openid) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -824,7 +824,7 @@ Wechat.prototype.batchTagging = function(tagId, openIdList) {
 		  .then(function(data) {
 		  	var url = api.tags.batchTagging + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			var form = {
@@ -836,7 +836,7 @@ Wechat.prototype.batchTagging = function(tagId, openIdList) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -871,7 +871,7 @@ Wechat.prototype.batchUnTagging = function(tagId, openIdList) {
 		  .then(function(data) {
 		  	var url = api.tags.batchUnTagging + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			var form = {
@@ -883,7 +883,7 @@ Wechat.prototype.batchUnTagging = function(tagId, openIdList) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -917,7 +917,7 @@ Wechat.prototype.getTagListOfUserId = function(openId) {
 		  .then(function(data) {
 		  	var url = api.tags.getIdList + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			var form = {
@@ -928,7 +928,7 @@ Wechat.prototype.getTagListOfUserId = function(openId) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -964,7 +964,7 @@ Wechat.prototype.remarkUser = function(openId, remark) {
 		  .then(function(data) {
 		  	var url = api.user.remark + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			var form = {
@@ -976,7 +976,7 @@ Wechat.prototype.remarkUser = function(openId, remark) {
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1029,14 +1029,14 @@ Wechat.prototype.fetchUsers = function(openIds, lang) {
 				options.method = 'GET'
 		  	}
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request(options)
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1073,14 +1073,14 @@ Wechat.prototype.listUsers = function(openId) {
 				url += '&next_openid=' + openId
 			}
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			request({method: 'GET', url: url, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1132,14 +1132,14 @@ Wechat.prototype.sendByTag = function(type, message, tagId) {
 		  .then(function(data) {
 		  	var url = api.mass.sendAllByTag + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			request({method: 'POST', url: url, body: msg, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1181,14 +1181,14 @@ Wechat.prototype.sendByOpenIds = function(type, message, openIds) {
 		  .then(function(data) {
 		  	var url = api.mass.sendAllByOpenIds + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			request({method: 'POST', url: url, body: msg, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1227,14 +1227,14 @@ Wechat.prototype.deleteMass = function(msgId, articleIdx) {
 		  .then(function(data) {
 		  	var url = api.mass.del + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			request({method: 'POST', url: url, body: form, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1277,14 +1277,14 @@ Wechat.prototype.previewMass = function(type, message, openId) {
 		  .then(function(data) {
 		  	var url = api.mass.preview + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 			
 			request({method: 'POST', url: url, body: msg, json: true})
 			.then(function(response) {
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1318,7 +1318,7 @@ Wechat.prototype.checkMass = function(msgId) {
 		  .then(function(data) {
 		  	var url = api.mass.check + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			var form = {
@@ -1329,7 +1329,7 @@ Wechat.prototype.checkMass = function(msgId) {
 			.then(function(response) { 
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1363,7 +1363,7 @@ Wechat.prototype.createMenu = function(menu) {
 		  .then(function(data) {
 		  	var url = api.menu.create + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			var form = menu
@@ -1372,7 +1372,7 @@ Wechat.prototype.createMenu = function(menu) {
 			.then(function(response) { 
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1405,14 +1405,14 @@ Wechat.prototype.getMenu = function() {
 		  .then(function(data) {
 		  	var url = api.menu.get + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'GET', url: url, json: true})
 			.then(function(response) { 
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1445,14 +1445,14 @@ Wechat.prototype.deleteMenu = function() {
 		  .then(function(data) {
 		  	var url = api.menu.del + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'GET', url: url, json: true})
 			.then(function(response) { 
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1485,14 +1485,14 @@ Wechat.prototype.getCurrentMenu = function() {
 		  .then(function(data) {
 		  	var url = api.menu.current + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'GET', url: url, json: true})
 			.then(function(response) { 
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1526,14 +1526,14 @@ Wechat.prototype.createQRCode = function(qr) {
 		  .then(function(data) {
 		  	var url = api.qrcode.create + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			request({method: 'POST', url: url, body: qr, json: true})
 			.then(function(response) { 
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1583,7 +1583,7 @@ Wechat.prototype.createShortUrl = function(longUrl, action) {
 		  .then(function(data) {
 		  	var url = api.shortUrl.create + 'access_token=' + data.access_token
 
-			// TODO ONLY for Debugging
+			// ONLY for Debugging
 			// console.log('url: ' + url)
 
 			var form = {
@@ -1594,7 +1594,7 @@ Wechat.prototype.createShortUrl = function(longUrl, action) {
 			.then(function(response) { 
 				var _data = response[1]
 
-				// TODO ONLY for Debugging
+				// ONLY for Debugging
 				// console.log('_data: ', _data)
 				
 				if (_data) {
@@ -1700,7 +1700,8 @@ Wechat.prototype.updateJSTicket = function(access_token) {
 Wechat.prototype.reply = function() {
 	var content = this.body
 	var message = this.weixin
-	// TODO Debug
+	
+	// ONLY for Debugging
 	// console.log('content in reply: ', content)
 	// console.log('message in reply: ', message)
 	
